@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>PhysioTrack - Field Operations Map</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -17,7 +17,6 @@
     --orange: #F16F21;
     --orange-soft: #FFF1EA;
     --yellow: #FCB913;
-    --yellow-ink: #4A3400;
     --green: #1E9E63;
     --green-soft: #E1F5EA;
     --bg: #F4F8FA;
@@ -44,6 +43,7 @@
   button, input, select { font-family: inherit; }
   button { cursor: pointer; }
   .hidden { display: none !important; }
+  :focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
 
   /* ---------------- Top Bar ---------------- */
   .topbar {
@@ -60,13 +60,10 @@
     box-shadow: var(--shadow-sm);
   }
   .logo {
-    width: 40px;
-    height: 40px;
+    width: 40px; height: 40px;
     border-radius: 11px;
     border: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    display: flex; align-items: center; justify-content: center;
     overflow: hidden;
     background: #fff;
     flex-shrink: 0;
@@ -78,45 +75,21 @@
   .brand { min-width: 0; }
   .brand-title {
     font-family: 'Plus Jakarta Sans', sans-serif;
-    font-weight: 800;
-    font-size: 15px;
+    font-weight: 800; font-size: 15px;
     color: var(--blue-dark);
-    white-space: nowrap;
-    line-height: 1.2;
+    white-space: nowrap; line-height: 1.2;
   }
-  .brand-sub {
-    font-size: 11px;
-    color: var(--muted);
-    white-space: nowrap;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-  }
-  .live-dot {
-    width: 7px;
-    height: 7px;
-    border-radius: 50%;
-    background: var(--green);
-    display: inline-block;
-    animation: pulse 2s infinite;
-  }
-  @keyframes pulse {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.45; transform: scale(0.85); }
-  }
+  .brand-sub { font-size: 11px; color: var(--muted); white-space: nowrap; display: flex; align-items: center; gap: 6px; }
+  .live-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); display: inline-block; animation: pulse 2s infinite; }
+  .live-dot.err { background: var(--orange); animation: none; }
+  @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.45; transform: scale(0.85); } }
 
   .spacer { flex: 1; }
   .top-stats { display: flex; align-items: center; gap: 6px; }
   .stat-pill {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    padding: 5px 10px;
-    border-radius: 999px;
-    font-size: 12px;
-    font-weight: 700;
-    border: 1px solid transparent;
-    white-space: nowrap;
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 5px 10px; border-radius: 999px;
+    font-size: 12px; font-weight: 700; white-space: nowrap;
   }
   .stat-pill.active { background: var(--green-soft); color: #136F44; }
   .stat-pill.completed { background: var(--blue-soft); color: var(--blue-dark); }
@@ -125,33 +98,22 @@
 
   .range-wrap { position: relative; }
   .range-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    height: 38px;
-    padding: 0 12px;
+    display: inline-flex; align-items: center; gap: 8px;
+    height: 38px; padding: 0 12px;
     border: 1px solid var(--blue-line);
-    background: var(--blue-soft);
-    color: var(--blue-dark);
-    border-radius: 10px;
-    font-size: 13px;
-    font-weight: 700;
+    background: var(--blue-soft); color: var(--blue-dark);
+    border-radius: 10px; font-size: 13px; font-weight: 700;
     transition: background 0.15s, border-color 0.15s;
   }
   .range-btn:hover { background: #D7EEF5; border-color: var(--blue); }
 
   .refresh-btn {
-    width: 38px;
-    height: 38px;
+    width: 38px; height: 38px;
     border-radius: 10px;
     border: 1px solid var(--border);
-    background: #fff;
-    font-size: 17px;
-    color: var(--blue-dark);
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    transition: background 0.15s, transform 0.2s;
+    background: #fff; color: var(--blue-dark);
+    display: inline-flex; align-items: center; justify-content: center;
+    transition: background 0.15s;
   }
   .refresh-btn:hover { background: var(--blue-soft); border-color: var(--blue-line); }
   .refresh-btn.spinning svg { animation: spin 0.8s linear infinite; }
@@ -159,38 +121,20 @@
 
   /* Calendar Popover */
   .cal {
-    position: absolute;
-    right: 0;
-    top: 46px;
-    width: 296px;
-    max-width: calc(100vw - 24px);
+    position: absolute; right: 0; top: 46px;
+    width: 296px; max-width: calc(100vw - 24px);
     background: #fff;
     border: 1px solid var(--border);
     border-radius: 16px;
     box-shadow: var(--shadow-md);
-    padding: 14px;
-    z-index: 1400;
+    padding: 14px; z-index: 1400;
   }
-  .cal-head {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 10px;
-    font-weight: 700;
-    font-size: 14px;
-    color: var(--blue-dark);
-  }
+  .cal-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; font-weight: 700; font-size: 14px; color: var(--blue-dark); }
   .cal-head button {
-    width: 30px;
-    height: 30px;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    background: #fff;
-    color: var(--blue-dark);
-    font-size: 16px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    width: 30px; height: 30px;
+    border: 1px solid var(--border); border-radius: 8px;
+    background: #fff; color: var(--blue-dark); font-size: 16px;
+    display: flex; align-items: center; justify-content: center;
   }
   .cal-head button:hover { background: var(--blue-soft); }
   .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; text-align: center; }
@@ -200,25 +144,8 @@
   .cal-day.in { background: var(--blue-soft); color: var(--blue-dark); border-radius: 0; font-weight: 600; }
   .cal-day.edge { background: var(--blue); color: #fff; border-radius: 8px; font-weight: 700; }
   .cal-day.today { outline: 2px solid var(--yellow); outline-offset: -2px; }
-  .cal-foot {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 10px;
-    padding-top: 8px;
-    border-top: 1px solid var(--border);
-    font-size: 12px;
-    color: var(--muted);
-  }
-  .cal-today-btn {
-    border: 1px solid var(--blue-line);
-    background: var(--blue-soft);
-    color: var(--blue-dark);
-    font-weight: 700;
-    font-size: 12px;
-    padding: 4px 10px;
-    border-radius: 8px;
-  }
+  .cal-foot { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; padding-top: 8px; border-top: 1px solid var(--border); font-size: 12px; color: var(--muted); }
+  .cal-today-btn { border: 1px solid var(--blue-line); background: var(--blue-soft); color: var(--blue-dark); font-weight: 700; font-size: 12px; padding: 4px 10px; border-radius: 8px; }
   .cal-today-btn:hover { background: var(--blue); color: #fff; }
 
   /* ---------------- Main Layout ---------------- */
@@ -227,124 +154,76 @@
   #map { flex: 1; width: 100%; height: 100%; z-index: 1; }
 
   .map-legend {
-    position: absolute;
-    bottom: 16px;
-    left: 14px;
-    z-index: 800;
+    position: absolute; bottom: 16px; left: 14px; z-index: 800;
     background: rgba(255, 255, 255, 0.94);
     backdrop-filter: blur(8px);
     border: 1px solid var(--border);
     border-radius: 12px;
     padding: 7px 12px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--ink);
+    display: flex; align-items: center; gap: 12px;
+    font-size: 12px; font-weight: 600; color: var(--ink);
     box-shadow: var(--shadow-sm);
-    pointer-events: auto;
   }
   .leg-item { display: inline-flex; align-items: center; gap: 6px; }
   .leg-dot { width: 10px; height: 10px; border-radius: 50%; border: 2px solid #fff; box-shadow: 0 0 0 1px rgba(0,0,0,.15); }
 
   /* ---------------- Right Panel ---------------- */
   .panel {
-    width: 420px;
-    max-width: 100%;
+    width: 420px; max-width: 100%;
     background: #fff;
     border-left: 1px solid var(--border);
-    display: flex;
-    flex-direction: column;
-    min-height: 0;
-    z-index: 10;
+    display: flex; flex-direction: column;
+    min-height: 0; z-index: 10;
   }
-  .panel-head {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 10px 14px;
-    border-bottom: 1px solid var(--border);
-    min-height: 54px;
-    background: #fff;
-  }
+  .panel-head { display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-bottom: 1px solid var(--border); min-height: 56px; background: #fff; }
   .back-btn {
-    height: 32px;
-    padding: 0 11px;
+    height: 32px; padding: 0 11px;
     border: 1px solid var(--blue-line);
-    background: var(--blue-soft);
-    color: var(--blue-dark);
-    border-radius: 9px;
-    font-size: 12px;
-    font-weight: 700;
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    flex-shrink: 0;
+    background: var(--blue-soft); color: var(--blue-dark);
+    border-radius: 9px; font-size: 12px; font-weight: 700;
+    display: inline-flex; align-items: center; gap: 4px; flex-shrink: 0;
   }
   .back-btn:hover { background: var(--blue); color: #fff; border-color: var(--blue); }
   .panel-titles { min-width: 0; flex: 1; }
   .panel-head h2 { font-size: 15px; font-weight: 800; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .panel-sub { font-size: 12px; color: var(--muted); margin-top: 1px; }
+  .panel-sub { font-size: 12px; color: var(--muted); margin-top: 2px; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
 
-  .panel-tools {
-    padding: 9px 12px;
-    border-bottom: 1px solid var(--border);
-    background: #FAFCFD;
-    display: flex;
-    flex-direction: column;
-    gap: 7px;
+  .empid {
+    display: inline-block;
+    font-size: 11px; font-weight: 700;
+    color: var(--blue-dark);
+    background: var(--blue-soft);
+    border: 1px solid var(--blue-line);
+    border-radius: 6px;
+    padding: 1px 7px;
+    white-space: nowrap;
   }
+
+  .panel-tools { padding: 9px 12px; border-bottom: 1px solid var(--border); background: #FAFCFD; display: flex; flex-direction: column; gap: 7px; }
   .search-box { position: relative; display: flex; align-items: center; }
   .search-box svg { position: absolute; left: 10px; color: var(--muted); pointer-events: none; }
   .search-input {
-    width: 100%;
-    height: 35px;
-    padding: 0 28px 0 32px;
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    background: #fff;
-    font-size: 13px;
-    color: var(--ink);
-    outline: none;
+    width: 100%; height: 35px;
+    padding: 0 12px 0 32px;
+    border: 1px solid var(--border); border-radius: 10px;
+    background: #fff; font-size: 13px; color: var(--ink); outline: none;
   }
   .search-input:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(0, 125, 157, 0.12); }
   .filter-row { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 2px; }
   .filter-row::-webkit-scrollbar { height: 0; }
-  .fchip {
-    border: 1px solid var(--border);
-    background: #fff;
-    color: var(--muted);
-    border-radius: 999px;
-    padding: 4px 11px;
-    font-size: 11px;
-    font-weight: 700;
-    white-space: nowrap;
-  }
+  .fchip { border: 1px solid var(--border); background: #fff; color: var(--muted); border-radius: 999px; padding: 4px 11px; font-size: 11px; font-weight: 700; white-space: nowrap; }
   .fchip.active { background: var(--blue-dark); color: #fff; border-color: var(--blue-dark); }
 
   .panel-body { flex: 1; overflow-y: auto; padding: 10px 12px 24px; background: var(--bg); }
-  .empty {
-    padding: 32px 16px;
-    text-align: center;
-    color: var(--muted);
-    font-size: 13px;
-    line-height: 1.6;
-    background: #fff;
-    border: 1px dashed var(--border);
-    border-radius: var(--radius);
-  }
+  .empty { padding: 32px 16px; text-align: center; color: var(--muted); font-size: 13px; line-height: 1.6; background: #fff; border: 1px dashed var(--border); border-radius: var(--radius); }
 
-  /* ---------------- Compact Cards ---------------- */
+  /* ---------------- Cards ---------------- */
   .pcard, .scard {
-    display: block;
-    width: 100%;
-    text-align: left;
+    display: block; width: 100%; text-align: left;
     background: #fff;
     border: 1px solid var(--border);
     border-radius: var(--radius);
-    padding: 10px 12px;
-    margin-bottom: 8px;
+    padding: 10px 12px; margin-bottom: 8px;
     border-left: 4px solid var(--blue-line);
     box-shadow: var(--shadow-sm);
     transition: transform 0.12s ease, border-color 0.15s ease, background 0.15s ease;
@@ -357,284 +236,128 @@
 
   .row { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
   .pname { font-weight: 700; font-size: 13.5px; color: var(--ink); line-height: 1.3; word-break: break-word; }
-  .punit { font-size: 11.5px; color: var(--muted); margin-top: 1px; }
+  .punit { font-size: 11.5px; color: var(--muted); margin-top: 3px; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
 
-  .meta-grid {
-    display: grid;
-    grid-template-columns: 74px 1fr;
-    gap: 3px 8px;
-    margin-top: 7px;
-    font-size: 11.5px;
-    line-height: 1.38;
-  }
+  .meta-grid { display: grid; grid-template-columns: 108px 1fr; gap: 3px 8px; margin-top: 8px; font-size: 11.5px; line-height: 1.4; }
   .meta-k { color: var(--muted); font-weight: 600; }
-  .meta-v {
-    color: #243A43;
-    font-weight: 500;
-    white-space: normal;
-    word-break: break-word;
-    overflow-wrap: anywhere;
-  }
+  .meta-v { color: #243A43; font-weight: 500; white-space: normal; word-break: break-word; overflow-wrap: anywhere; }
 
   .chip { font-size: 10.5px; font-weight: 700; padding: 2px 8px; border-radius: 999px; white-space: nowrap; flex-shrink: 0; }
   .chip.Active { background: var(--green-soft); color: #136F44; }
   .chip.Completed { background: var(--blue-soft); color: var(--blue-dark); }
   .chip.Missing { background: var(--orange-soft); color: #A8480E; }
+  .chip.None { background: #EDF3F6; color: var(--muted); }
+  .chip.mode { background: var(--ink); color: #fff; }
   .dur { font-weight: 800; color: var(--blue-dark); }
 
-  /* Compact Shift Card Photos Row */
-  .sc-photos {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
-    margin-top: 8px;
-    padding-top: 8px;
-    border-top: 1px solid #EDF3F6;
-  }
-  .sc-thumb-box {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    background: #F6FAFC;
-    border: 1px solid var(--border);
-    border-radius: 9px;
-    padding: 5px;
-    min-width: 0;
-  }
-  .sc-thumb-img {
-    width: 44px;
-    height: 44px;
-    border-radius: 7px;
-    object-fit: cover;
-    flex-shrink: 0;
-    cursor: zoom-in;
-    border: 1px solid var(--border);
-    background: var(--blue-soft);
-  }
-  .sc-thumb-empty {
-    width: 44px;
-    height: 44px;
-    border-radius: 7px;
-    flex-shrink: 0;
-    background: #EDF3F6;
-    color: var(--muted);
-    font-size: 10px;
-    font-weight: 700;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-  }
+  /* Shift card photos */
+  .sc-photos { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 9px; padding-top: 9px; border-top: 1px solid #EDF3F6; }
+  .sc-thumb-box { display: flex; align-items: center; gap: 8px; background: #F6FAFC; border: 1px solid var(--border); border-radius: 9px; padding: 5px; min-width: 0; }
+  .sc-thumb-img { width: 44px; height: 44px; border-radius: 7px; object-fit: cover; flex-shrink: 0; cursor: zoom-in; border: 1px solid var(--border); background: var(--blue-soft); }
+  .sc-thumb-empty { width: 44px; height: 44px; border-radius: 7px; flex-shrink: 0; background: #EDF3F6; color: var(--muted); font-size: 10px; font-weight: 700; display: flex; align-items: center; justify-content: center; text-align: center; }
   .sc-thumb-info { min-width: 0; flex: 1; }
   .sc-thumb-lbl { font-size: 10.5px; font-weight: 800; color: var(--ink); display: block; }
   .sc-thumb-lbl.in-lbl { color: #136F44; }
   .sc-thumb-lbl.out-lbl { color: #B84F0F; }
-  .zoom-link {
-    display: inline-block;
-    margin-top: 2px;
-    border: none;
-    background: none;
-    padding: 0;
-    font-size: 11px;
-    font-weight: 700;
-    color: var(--blue);
-    text-decoration: underline;
-    cursor: pointer;
-  }
+  .sc-thumb-na { font-size: 10.5px; color: var(--muted); }
+  .zoom-link { display: inline-block; margin-top: 2px; border: none; background: none; padding: 0; font-size: 11px; font-weight: 700; color: var(--blue); text-decoration: underline; cursor: pointer; }
   .zoom-link:hover { color: var(--blue-dark); }
 
-  /* ---------------- Compact Shift Detail View ---------------- */
+  /* ---------------- Shift detail view ---------------- */
   .summary { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 10px; }
   .sum-box { background: #fff; border: 1px solid var(--blue-line); border-radius: var(--radius); padding: 8px 10px; text-align: center; box-shadow: var(--shadow-sm); }
-  .sum-lbl { font-size: 10.5px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; }
+  .sum-lbl { font-size: 10.5px; font-weight: 600; color: var(--muted); letter-spacing: 0.02em; }
   .sum-val { font-weight: 800; font-size: 14px; color: var(--blue-dark); margin-top: 2px; }
 
   .sec { background: #fff; border: 1px solid var(--border); border-radius: var(--radius); padding: 11px 12px; margin-bottom: 10px; box-shadow: var(--shadow-sm); }
   .sec h3 { font-size: 13.5px; font-weight: 800; margin-bottom: 8px; display: flex; align-items: center; gap: 7px; color: var(--ink); }
   .dot { width: 9px; height: 9px; border-radius: 50%; display: inline-block; flex-shrink: 0; }
-  .kv { display: grid; grid-template-columns: 104px 1fr; gap: 5px 8px; font-size: 12px; line-height: 1.4; }
+  .kv { display: grid; grid-template-columns: 112px 1fr; gap: 6px 8px; font-size: 12px; line-height: 1.4; }
   .kv-k { color: var(--muted); font-weight: 600; }
   .kv-v { font-weight: 600; color: var(--ink); white-space: normal; word-break: break-word; overflow-wrap: anywhere; }
+  .gps { font-variant-numeric: tabular-nums; }
+  .gps-link { display: inline-block; margin-left: 6px; font-size: 11px; font-weight: 700; color: var(--blue); text-decoration: underline; white-space: nowrap; }
+  .gps-link:hover { color: var(--blue-dark); }
 
-  /* Compact detail photo bar */
-  .detail-photo-row {
-    margin-top: 9px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    background: #F6FAFC;
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 7px;
-  }
-  .detail-photo-row img {
-    width: 68px;
-    height: 68px;
-    border-radius: 8px;
-    object-fit: cover;
-    cursor: zoom-in;
-    flex-shrink: 0;
-    border: 1px solid var(--border);
-  }
+  .detail-photo-row { margin-top: 10px; display: flex; align-items: center; gap: 10px; background: #F6FAFC; border: 1px solid var(--border); border-radius: 10px; padding: 7px; }
+  .detail-photo-row img { width: 68px; height: 68px; border-radius: 8px; object-fit: cover; cursor: zoom-in; flex-shrink: 0; border: 1px solid var(--border); background: var(--blue-soft); }
   .detail-photo-meta { flex: 1; min-width: 0; }
   .detail-photo-title { font-size: 12px; font-weight: 700; color: var(--ink); margin-bottom: 5px; }
   .detail-photo-actions { display: flex; gap: 6px; flex-wrap: wrap; }
-  .mini-pill-btn {
-    border: 1px solid var(--blue-line);
-    background: var(--blue-soft);
-    color: var(--blue-dark);
-    border-radius: 7px;
-    padding: 4px 9px;
-    font-size: 11px;
-    font-weight: 700;
-    text-decoration: none;
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-  }
+  .mini-pill-btn { border: 1px solid var(--blue-line); background: var(--blue-soft); color: var(--blue-dark); border-radius: 7px; padding: 4px 9px; font-size: 11px; font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 4px; }
   .mini-pill-btn:hover { background: var(--blue); color: #fff; border-color: var(--blue); }
   .nophoto { margin-top: 8px; font-size: 11.5px; color: var(--muted); background: #F3F7F9; border: 1px dashed var(--border); border-radius: 9px; padding: 8px; text-align: center; }
 
-  /* ---------------- Map Photo Bubbles + IN/OUT Tag ---------------- */
-  .bub-wrap {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 52px;
-    pointer-events: auto;
-  }
+  /* ---------------- Map Photo Bubbles ---------------- */
+  .bub-wrap { display: flex; flex-direction: column; align-items: center; width: 52px; }
   .bub-tag {
     font-family: 'Plus Jakarta Sans', sans-serif;
-    font-size: 9px;
-    font-weight: 800;
-    line-height: 1;
-    letter-spacing: 0.04em;
-    padding: 2px 6px;
-    border-radius: 999px;
-    color: #fff;
-    background: var(--green);
+    font-size: 9px; font-weight: 800; line-height: 1; letter-spacing: 0.04em;
+    padding: 2px 6px; border-radius: 999px;
+    color: #fff; background: var(--green);
     border: 1.5px solid #fff;
     box-shadow: 0 2px 5px rgba(0,0,0,0.28);
-    margin-bottom: 2px;
-    white-space: nowrap;
+    margin-bottom: 2px; white-space: nowrap;
   }
   .bub-tag.in, .bub-tag.Active { background: var(--green); }
   .bub-tag.Completed { background: var(--blue); }
   .bub-tag.out, .bub-tag.Missing { background: var(--orange); }
 
   .bub {
-    width: 44px;
-    height: 44px;
+    width: 44px; height: 44px;
     border-radius: 50%;
     border: 3px solid #fff;
     color: #fff;
     font-family: 'Plus Jakarta Sans', sans-serif;
-    font-weight: 800;
-    font-size: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-    box-shadow: 0 3px 10px rgba(0, 38, 47, 0.42);
+    font-weight: 800; font-size: 12px;
+    display: flex; align-items: center; justify-content: center;
+    overflow: hidden; position: relative;
     transition: transform 0.15s ease;
-    position: relative;
   }
   .bub:hover { transform: scale(1.12); }
   .bub.Active, .bub.in { background: var(--green); border-color: var(--green); box-shadow: 0 0 0 2px #fff, 0 4px 10px rgba(0, 38, 47, 0.35); }
   .bub.Completed { background: var(--blue); border-color: var(--blue); box-shadow: 0 0 0 2px #fff, 0 4px 10px rgba(0, 38, 47, 0.35); }
   .bub.Missing, .bub.out { background: var(--orange); border-color: var(--orange); box-shadow: 0 0 0 2px #fff, 0 4px 10px rgba(0, 38, 47, 0.35); }
-  .bub img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-    border-radius: 50%;
-  }
+  .bub img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; border-radius: 50%; }
 
   /* ---------------- Map Popups ---------------- */
   .leaflet-popup-content-wrapper { border-radius: 14px; box-shadow: var(--shadow-md); }
   .leaflet-popup-content { font-family: 'DM Sans', sans-serif; font-size: 12.5px; line-height: 1.4; margin: 12px 14px; min-width: 245px; max-width: 290px; }
-  .pop-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 3px; }
-  .pop-name { font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 800; font-size: 14px; color: var(--ink); }
-  .pop-hosp { font-size: 12.5px; font-weight: 700; color: var(--blue-dark); margin-bottom: 6px; word-break: break-word; }
+  .pop-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; margin-bottom: 6px; }
+  .pop-name { font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 800; font-size: 14px; color: var(--ink); word-break: break-word; }
+  .pop-emp { margin-top: 3px; }
+  .pop-chips { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
+  .pop-hosp { background: var(--blue-soft); border: 1px solid var(--blue-line); border-radius: 9px; padding: 5px 8px; margin-bottom: 6px; }
+  .pop-hosp-k { display: block; font-size: 10px; font-weight: 700; color: var(--muted); }
+  .pop-hosp-v { display: block; font-size: 12.5px; font-weight: 700; color: var(--blue-dark); word-break: break-word; }
   .pop-row { font-size: 11.5px; color: #2B424C; margin-top: 2px; word-break: break-word; }
   .pop-row b { color: var(--muted); }
-  .pop-metrics {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 5px;
-    margin: 7px 0 6px;
-  }
-  .pop-metric {
-    background: var(--blue-soft);
-    border: 1px solid var(--blue-line);
-    border-radius: 8px;
-    padding: 4px 5px;
-    text-align: center;
-  }
-  .pop-metric-k { display: block; font-size: 9.5px; font-weight: 700; color: var(--muted); text-transform: uppercase; }
+  .pop-metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; margin: 7px 0 6px; }
+  .pop-metric { background: var(--blue-soft); border: 1px solid var(--blue-line); border-radius: 8px; padding: 4px 5px; text-align: center; }
+  .pop-metric-k { display: block; font-size: 9.5px; font-weight: 700; color: var(--muted); }
   .pop-metric-v { display: block; font-size: 13px; font-weight: 800; color: var(--blue-dark); }
-  .pop-remarks {
-    background: #F6FAFC;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 5px 7px;
-    font-size: 11.5px;
-    color: var(--ink);
-    margin-top: 5px;
-    word-break: break-word;
-  }
+  .pop-remarks { background: #F6FAFC; border: 1px solid var(--border); border-radius: 8px; padding: 5px 7px; font-size: 11.5px; color: var(--ink); margin-top: 5px; word-break: break-word; }
   .pop-btn { margin-top: 9px; width: 100%; border: none; background: var(--blue); color: #fff; border-radius: 9px; padding: 7px 12px; font-size: 12px; font-weight: 700; }
   .pop-btn:hover { background: var(--blue-dark); }
 
   /* ---------------- Loading & Lightbox ---------------- */
   .loading {
-    position: absolute;
-    inset: 60px 0 0 0;
+    position: absolute; inset: 60px 0 0 0;
     background: rgba(244, 248, 250, 0.92);
     backdrop-filter: blur(4px);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 12px;
-    font-weight: 700;
-    color: var(--blue-dark);
-    z-index: 2000;
-    padding: 20px;
-    text-align: center;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 12px; font-weight: 700; color: var(--blue-dark);
+    z-index: 2000; padding: 20px; text-align: center;
   }
   .spinner { width: 34px; height: 34px; border: 3px solid var(--blue-line); border-top-color: var(--blue); border-radius: 50%; animation: spin 0.8s linear infinite; }
+  .loading.failed .spinner { display: none; }
+  .retry-btn { border: none; background: var(--blue); color: #fff; border-radius: 9px; padding: 8px 16px; font-size: 13px; font-weight: 700; }
+  .retry-btn:hover { background: var(--blue-dark); }
 
-  .lightbox {
-    position: fixed;
-    inset: 0;
-    background: rgba(10, 20, 26, 0.9);
-    z-index: 3000;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 12px;
-    padding: 20px;
-  }
+  .lightbox { position: fixed; inset: 0; background: rgba(10, 20, 26, 0.9); z-index: 3000; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; padding: 20px; }
   .lightbox img { max-width: 95vw; max-height: 82vh; border-radius: 12px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
   .lightbox-cap { color: #fff; font-size: 13px; font-weight: 700; }
-  .lightbox-close {
-    position: absolute;
-    top: 16px;
-    right: 16px;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    border: none;
-    background: rgba(255,255,255,0.2);
-    color: #fff;
-    font-size: 22px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
+  .lightbox-close { position: absolute; top: 16px; right: 16px; width: 40px; height: 40px; border-radius: 50%; border: none; background: rgba(255,255,255,0.2); color: #fff; font-size: 22px; display: flex; align-items: center; justify-content: center; }
 
   @media (max-width: 900px) { .top-stats { display: none; } }
   @media (max-width: 800px) {
@@ -644,17 +367,21 @@
     .brand-sub { display: none; }
     .map-legend { bottom: 8px; left: 8px; padding: 5px 9px; gap: 8px; font-size: 11px; }
   }
+  @media (prefers-reduced-motion: reduce) {
+    .live-dot, .spinner, .refresh-btn.spinning svg { animation: none; }
+    .pcard, .scard, .bub { transition: none; }
+  }
 </style>
 </head>
 <body>
 
 <header class="topbar">
   <div class="logo" id="logo">
-    <img src="/logo.png" alt="Logo" onerror="this.parentNode.textContent='PT'" />
+    <img src="/logo.png" alt="Logo" />
   </div>
   <div class="brand">
     <div class="brand-title">Field Operations Map</div>
-    <div class="brand-sub"><span class="live-dot"></span><span id="syncText">Connecting...</span></div>
+    <div class="brand-sub"><span class="live-dot" id="liveDot"></span><span id="syncText">Connecting...</span></div>
   </div>
 
   <div class="spacer"></div>
@@ -712,6 +439,7 @@
 <div class="loading" id="loading">
   <div class="spinner"></div>
   <div id="loadingMsg">Loading attendance data from Supabase...</div>
+  <button class="retry-btn hidden" id="retryBtn" type="button">Try again</button>
 </div>
 
 <div class="lightbox hidden" id="lightbox">
@@ -728,16 +456,20 @@
   'use strict';
 
   var CFG = window.PHYSIOTRACK_CONFIG || {};
-  var sb = window.supabase.createClient(CFG.SUPABASE_URL, CFG.SUPABASE_ANON_KEY);
-
   var $ = function (id) { return document.getElementById(id); };
   var TZ = CFG.TIMEZONE || 'Asia/Kolkata';
   var MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
 
+  /* ---------------- Helpers ---------------- */
   function esc(s) {
     return String(s == null ? '' : s)
       .replace(/&/g, '&amp;').replace(/</g, '&lt;')
       .replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  }
+
+  function orDash(v) {
+    var s = String(v == null ? '' : v).trim();
+    return s ? s : '-';
   }
 
   function todayKey() {
@@ -787,7 +519,7 @@
 
   function durOf(r) {
     if (!r) return '-';
-    return r.signOutTime ? (r.duration || '-') : (statusOf(r) === 'Active' ? elapsed(r) : '-');
+    return r.signOutTime ? orDash(r.duration) : (statusOf(r) === 'Active' ? elapsed(r) : '-');
   }
 
   function initials(n) {
@@ -814,13 +546,32 @@
     return km < 1 ? Math.round(km * 1000) + ' m' : km.toFixed(2) + ' km';
   }
 
+  function gpsText(lat, lng) {
+    return validPt(lat, lng) ? Number(lat).toFixed(6) + ', ' + Number(lng).toFixed(6) : '';
+  }
+
+  /* GPS value + "Open map" link, or a dash when unavailable */
+  function gpsHtml(lat, lng) {
+    var t = gpsText(lat, lng);
+    if (!t) return '-';
+    var url = 'https://www.google.com/maps?q=' + encodeURIComponent(Number(lat).toFixed(6) + ',' + Number(lng).toFixed(6));
+    return '<span class="gps">' + esc(t) + '</span>' +
+           '<a class="gps-link" href="' + esc(url) + '" target="_blank" rel="noopener">Open map</a>';
+  }
+
+  function empBadge(empId) {
+    return '<span class="empid">ID: ' + esc(orDash(empId)) + '</span>';
+  }
+
+  /* ---------------- State ---------------- */
   var S = {
     profiles: [],
     att: [],
     from: todayKey(),
     to: todayKey(),
     pending: false,
-    view: 'list',
+    view: 'list',      // list | shifts | detail
+    prevView: 'list',
     empId: '',
     shiftId: '',
     calMonth: null,
@@ -829,6 +580,17 @@
     hasFittedOnce: false
   };
 
+  /* ---------------- Supabase client ---------------- */
+  var sb = null;
+  try {
+    if (!window.supabase) throw new Error('Supabase library failed to load');
+    if (!CFG.SUPABASE_URL || !CFG.SUPABASE_ANON_KEY) throw new Error('Missing SUPABASE_URL / SUPABASE_ANON_KEY in config.js');
+    sb = window.supabase.createClient(CFG.SUPABASE_URL, CFG.SUPABASE_ANON_KEY);
+  } catch (e) {
+    showLoadError(e && e.message ? e.message : e);
+  }
+
+  /* ---------------- Map ---------------- */
   var map = L.map('map', { zoomControl: true }).setView([17.385, 78.4867], 11);
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 19,
@@ -836,16 +598,13 @@
   }).addTo(map);
   var layer = L.layerGroup().addTo(map);
 
-  /* Photo bubble with small IN / OUT pill tag directly above */
-  function bubble(cls, fallbackText, lat, lng, photoUrl, topTag) {
-    var inner = photoUrl
-      ? '<img src="' + esc(photoUrl) + '" alt="' + esc(fallbackText) + '" referrerpolicy="no-referrer" ' +
-          'onerror="this.parentNode.textContent=\'' + esc(fallbackText) + '\'" />'
-      : esc(fallbackText);
-
-    var tagHtml = topTag
-      ? '<div class="bub-tag ' + esc(cls) + '">' + esc(topTag) + '</div>'
-      : '';
+  /* Photo bubble: initials always render underneath, photo overlays and removes itself on error */
+  function bubble(cls, name, lat, lng, photoUrl, topTag) {
+    var inner = '<span>' + esc(initials(name)) + '</span>' +
+      (photoUrl
+        ? '<img class="bub-img" src="' + esc(photoUrl) + '" alt="" referrerpolicy="no-referrer" />'
+        : '');
+    var tagHtml = topTag ? '<div class="bub-tag ' + esc(cls) + '">' + esc(topTag) + '</div>' : '';
 
     return L.marker([lat, lng], {
       icon: L.divIcon({
@@ -870,28 +629,30 @@
 
   function popupHtml(r, modeLabel) {
     var st = statusOf(r);
-    var outTimeRow = r.signOutTime
-      ? '<div class="pop-row"><b>Logout:</b> ' + esc(fmtDT(r.signOutTime)) + '</div>'
-      : '<div class="pop-row"><b>Logout:</b> ' + esc(statusLabel(r)) + '</div>';
-
-    var headerTag = modeLabel ? ' (' + modeLabel + ')' : '';
+    var logout = r.signOutTime ? fmtDT(r.signOutTime) : statusLabel(r);
 
     return (
       '<div class="pop-head">' +
-        '<span class="pop-name">' + esc(r.physioName) + esc(headerTag) + '</span>' +
-        '<span class="chip ' + st + '">' + esc(statusLabel(r)) + '</span>' +
+        '<div>' +
+          '<div class="pop-name">' + esc(orDash(r.physioName)) + '</div>' +
+          '<div class="pop-emp">' + empBadge(r.empId) + '</div>' +
+        '</div>' +
+        '<div class="pop-chips">' +
+          (modeLabel ? '<span class="chip mode">' + esc(modeLabel) + ' punch</span>' : '') +
+          '<span class="chip ' + st + '">' + esc(statusLabel(r)) + '</span>' +
+        '</div>' +
       '</div>' +
-      '<div class="pop-hosp">' + esc(r.hospitalName || 'Hospital not entered') + '</div>' +
+      '<div class="pop-hosp"><span class="pop-hosp-k">Hospital</span><span class="pop-hosp-v">' + esc(r.hospitalName || 'Hospital not entered') + '</span></div>' +
       '<div class="pop-row"><b>Login:</b> ' + esc(fmtDT(r.signInTime)) + '</div>' +
-      outTimeRow +
+      '<div class="pop-row"><b>Logout:</b> ' + esc(logout) + '</div>' +
       '<div class="pop-row"><b>Duration:</b> <span class="dur">' + esc(durOf(r)) + '</span></div>' +
-      '<div class="pop-row"><b>PRE Name:</b> ' + esc(r.preName || '-') + '</div>' +
+      '<div class="pop-row"><b>PRE Name:</b> ' + esc(orDash(r.preName)) + '</div>' +
       '<div class="pop-metrics">' +
-        '<div class="pop-metric"><span class="pop-metric-k">Visited</span><span class="pop-metric-v">' + esc(r.patientsVisited || '-') + '</span></div>' +
-        '<div class="pop-metric"><span class="pop-metric-k">Assessed</span><span class="pop-metric-v">' + esc(r.assessmentsDone || '-') + '</span></div>' +
-        '<div class="pop-metric"><span class="pop-metric-k">Converted</span><span class="pop-metric-v">' + esc(r.converted || '-') + '</span></div>' +
+        '<div class="pop-metric"><span class="pop-metric-k">Visited</span><span class="pop-metric-v">' + esc(orDash(r.patientsVisited)) + '</span></div>' +
+        '<div class="pop-metric"><span class="pop-metric-k">Assessed</span><span class="pop-metric-v">' + esc(orDash(r.assessmentsDone)) + '</span></div>' +
+        '<div class="pop-metric"><span class="pop-metric-k">Converted</span><span class="pop-metric-v">' + esc(orDash(r.converted)) + '</span></div>' +
       '</div>' +
-      '<div class="pop-remarks"><b>Remarks:</b> ' + esc(r.remarks || '-') + '</div>' +
+      '<div class="pop-remarks"><b>Remarks:</b> ' + esc(orDash(r.remarks)) + '</div>' +
       (S.view !== 'detail'
         ? '<button class="pop-btn" data-open="' + esc(r.id) + '" type="button">View details</button>'
         : '')
@@ -904,22 +665,22 @@
     var seen = {};
 
     if (S.view === 'detail') {
-      var r = byId(S.shiftId);
-      if (r) {
-        if (validPt(r.signInLat, r.signInLng)) {
-          var pIn = [Number(r.signInLat), Number(r.signInLng)];
-          bubble('in', initials(r.physioName), pIn[0], pIn[1], r.signInPhoto, 'IN')
-            .bindPopup(popupHtml(r, 'IN'))
+      var sh = byId(S.shiftId);
+      if (sh) {
+        if (validPt(sh.signInLat, sh.signInLng)) {
+          var pIn = [Number(sh.signInLat), Number(sh.signInLng)];
+          bubble('in', sh.physioName, pIn[0], pIn[1], sh.signInPhoto, 'IN')
+            .bindPopup(popupHtml(sh, 'IN'))
             .addTo(layer);
           pts.push(pIn);
         }
-        if (r.signOutTime && validPt(r.signOutLat, r.signOutLng)) {
-          var pOut = [Number(r.signOutLat), Number(r.signOutLng)];
+        if (sh.signOutTime && validPt(sh.signOutLat, sh.signOutLng)) {
+          var pOut = [Number(sh.signOutLat), Number(sh.signOutLng)];
           if (pts.length && Math.abs(pts[0][0] - pOut[0]) < 0.00003 && Math.abs(pts[0][1] - pOut[1]) < 0.00003) {
             pOut = [pOut[0] + 0.00018, pOut[1] + 0.00018];
           }
-          bubble('out', initials(r.physioName), pOut[0], pOut[1], r.signOutPhoto, 'OUT')
-            .bindPopup(popupHtml(r, 'OUT'))
+          bubble('out', sh.physioName, pOut[0], pOut[1], sh.signOutPhoto, 'OUT')
+            .bindPopup(popupHtml(sh, 'OUT'))
             .addTo(layer);
           pts.push(pOut);
           if (pts.length === 2) {
@@ -932,20 +693,18 @@
       list.forEach(function (r) {
         var st = statusOf(r);
         if (validPt(r.signInLat, r.signInLng)) {
-          var coordIn = spreadCoord(Number(r.signInLat), Number(r.signInLng), seen);
-          var tagIn = r.signOutTime ? 'IN' : (st === 'Missing' ? 'IN' : 'IN');
-          var clsIn = r.signOutTime ? 'in' : st;
-          bubble(clsIn, initials(r.physioName), coordIn[0], coordIn[1], r.signInPhoto, tagIn)
+          var cIn = spreadCoord(Number(r.signInLat), Number(r.signInLng), seen);
+          bubble(r.signOutTime ? 'in' : st, r.physioName, cIn[0], cIn[1], r.signInPhoto, 'IN')
             .bindPopup(popupHtml(r, 'IN'))
             .addTo(layer);
-          pts.push(coordIn);
+          pts.push(cIn);
         }
         if (r.signOutTime && validPt(r.signOutLat, r.signOutLng)) {
-          var coordOut = spreadCoord(Number(r.signOutLat), Number(r.signOutLng), seen);
-          bubble('out', initials(r.physioName), coordOut[0], coordOut[1], r.signOutPhoto || r.signInPhoto, 'OUT')
+          var cOut = spreadCoord(Number(r.signOutLat), Number(r.signOutLng), seen);
+          bubble('out', r.physioName, cOut[0], cOut[1], r.signOutPhoto, 'OUT')
             .bindPopup(popupHtml(r, 'OUT'))
             .addTo(layer);
-          pts.push(coordOut);
+          pts.push(cOut);
         }
       });
     }
@@ -972,6 +731,21 @@
     if (b) openShift(b.getAttribute('data-open'));
   });
 
+  /* Broken images: remove map photo overlays, swap thumbnails for a placeholder */
+  document.addEventListener('error', function (e) {
+    var t = e.target;
+    if (!t || t.tagName !== 'IMG') return;
+    if (t.classList.contains('bub-img')) {
+      t.remove();
+    } else if (t.classList.contains('sc-thumb-img')) {
+      var ph = document.createElement('div');
+      ph.className = 'sc-thumb-empty';
+      ph.textContent = 'No pic';
+      t.replaceWith(ph);
+    }
+  }, true);
+
+  /* ---------------- Data accessors ---------------- */
   function byId(id) { return S.att.find(function (r) { return r.id === id; }); }
   function inRange(r) { return r.signInDate >= S.from && r.signInDate <= S.to; }
   function shiftsFor(emp) {
@@ -979,13 +753,16 @@
       .sort(function (a, b) { return new Date(b.signInTime) - new Date(a.signInTime); });
   }
   function profileOf(emp) {
-    return S.profiles.find(function (p) { return p.empId === emp; }) || { name: emp, unit: '', empId: emp };
+    var p = S.profiles.find(function (x) { return x.empId === emp; });
+    if (p) return p;
+    var s = S.att.find(function (r) { return r.empId === emp; });
+    return { name: s ? s.physioName : emp, unit: s ? s.unit : '', empId: emp };
   }
 
+  /* ---------------- Rendering ---------------- */
   function renderTopStats() {
-    var rangeAtt = S.att.filter(inRange);
     var act = 0, comp = 0, miss = 0;
-    rangeAtt.forEach(function (r) {
+    S.att.filter(inRange).forEach(function (r) {
       var st = statusOf(r);
       if (st === 'Active') act++;
       else if (st === 'Completed') comp++;
@@ -1002,7 +779,7 @@
       return (
         '<div class="sc-thumb-box">' +
           '<div class="sc-thumb-empty">No pic</div>' +
-          '<div class="sc-thumb-info"><span class="sc-thumb-lbl ' + clsName + '">' + esc(label) + '</span><span style="font-size:10.5px;color:var(--muted)">Not available</span></div>' +
+          '<div class="sc-thumb-info"><span class="sc-thumb-lbl ' + clsName + '">' + esc(label) + '</span><span class="sc-thumb-na">Not available</span></div>' +
         '</div>'
       );
     }
@@ -1019,9 +796,7 @@
   }
 
   function detailPhotoHtml(url, label) {
-    if (!url) {
-      return '<div class="nophoto">Photo not available.</div>';
-    }
+    if (!url) return '<div class="nophoto">Photo not available.</div>';
     return (
       '<div class="detail-photo-row">' +
         '<img src="' + esc(url) + '" alt="' + esc(label) + '" referrerpolicy="no-referrer" loading="lazy" ' +
@@ -1029,12 +804,163 @@
         '<div class="detail-photo-meta">' +
           '<div class="detail-photo-title">' + esc(label) + '</div>' +
           '<div class="detail-photo-actions">' +
-            '<button class="mini-pill-btn" type="button" data-zoom="' + esc(url) + '" data-cap="' + esc(label) + '">Full View</button>' +
+            '<button class="mini-pill-btn" type="button" data-zoom="' + esc(url) + '" data-cap="' + esc(label) + '">Full view</button>' +
             '<a class="mini-pill-btn" href="' + esc(url) + '" target="_blank" rel="noopener">Open &nearr;</a>' +
           '</div>' +
         '</div>' +
       '</div>'
     );
+  }
+
+  /* Page 1: physio list */
+  function renderList(body) {
+    var rangeAtt = S.att.filter(inRange);
+    $('panelTitle').textContent = 'Physios (' + S.profiles.length + ')';
+    $('panelSub').textContent = rangeAtt.length + ' shift' + (rangeAtt.length === 1 ? '' : 's') + ' on map for selected dates';
+
+    if (!S.profiles.length) {
+      body.innerHTML = '<div class="empty">No physio profiles found in Supabase yet.</div>';
+      return;
+    }
+
+    var q = S.search.trim().toLowerCase();
+    var filtered = S.profiles.filter(function (p) {
+      var last = shiftsFor(p.empId)[0];
+      if (S.filter !== 'all' && (!last || statusOf(last) !== S.filter)) return false;
+      if (q) {
+        var hay = (p.name + ' ' + p.unit + ' ' + p.empId + ' ' + (last ? last.hospitalName : '')).toLowerCase();
+        if (hay.indexOf(q) === -1) return false;
+      }
+      return true;
+    });
+
+    if (!filtered.length) {
+      body.innerHTML = '<div class="empty">No physios match your current search or filter.</div>';
+      return;
+    }
+
+    body.innerHTML = filtered.map(function (p) {
+      var last = shiftsFor(p.empId)[0];
+      var st = last ? statusOf(last) : 'None';
+
+      var detail = last
+        ? '<div class="meta-grid">' +
+            '<span class="meta-k">Hospital</span><span class="meta-v">' + esc(orDash(last.hospitalName)) + '</span>' +
+            '<span class="meta-k">Last login</span><span class="meta-v">' + esc(fmtDT(last.signInTime)) + '</span>' +
+            '<span class="meta-k">Last logout</span><span class="meta-v">' + esc(last.signOutTime ? fmtDT(last.signOutTime) : statusLabel(last)) + '</span>' +
+            '<span class="meta-k">Duration</span><span class="meta-v dur">' + esc(durOf(last)) + '</span>' +
+          '</div>'
+        : '<div class="meta-grid"><span class="meta-k">Status</span><span class="meta-v" style="color:var(--muted)">No shifts punched yet</span></div>';
+
+      return (
+        '<div class="pcard st-' + st + '" role="button" tabindex="0" data-emp="' + esc(p.empId) + '">' +
+          '<div class="row">' +
+            '<div>' +
+              '<div class="pname">' + esc(orDash(p.name)) + '</div>' +
+              '<div class="punit">' + empBadge(p.empId) + (p.unit ? '<span>' + esc(p.unit) + '</span>' : '') + '</div>' +
+            '</div>' +
+            (last ? '<span class="chip ' + st + '">' + esc(statusLabel(last)) + '</span>' : '<span class="chip None">No shifts</span>') +
+          '</div>' +
+          detail +
+        '</div>'
+      );
+    }).join('');
+  }
+
+  /* Page 2: all shifts of one physio */
+  function renderShifts(body) {
+    var p = profileOf(S.empId);
+    var list = shiftsFor(S.empId);
+    $('panelTitle').textContent = orDash(p.name);
+    $('panelSub').innerHTML =
+      empBadge(p.empId) +
+      '<span>' + (p.unit ? esc(p.unit) + ' &middot; ' : '') + list.length + ' shift' + (list.length === 1 ? '' : 's') + ' (latest first)</span>';
+
+    body.innerHTML = list.length ? list.map(function (r) {
+      var st = statusOf(r);
+      return (
+        '<div class="scard st-' + st + '" role="button" tabindex="0" data-shift="' + esc(r.id) + '">' +
+          '<div class="row">' +
+            '<div class="pname">' + esc(fmtDay(r.signInDate)) + '</div>' +
+            '<span class="chip ' + st + '">' + esc(statusLabel(r)) + '</span>' +
+          '</div>' +
+          '<div class="meta-grid">' +
+            '<span class="meta-k">Login</span><span class="meta-v">' + esc(fmtDT(r.signInTime)) + '</span>' +
+            '<span class="meta-k">Logout</span><span class="meta-v">' + esc(r.signOutTime ? fmtDT(r.signOutTime) : '-') + ' &middot; <span class="dur">' + esc(durOf(r)) + '</span></span>' +
+            '<span class="meta-k">Hospital Name</span><span class="meta-v">' + esc(orDash(r.hospitalName)) + '</span>' +
+            '<span class="meta-k">PRE Name</span><span class="meta-v">' + esc(orDash(r.preName)) + '</span>' +
+            '<span class="meta-k">Patients Visited</span><span class="meta-v">' + esc(orDash(r.patientsVisited)) + '</span>' +
+            '<span class="meta-k">Assessments Done</span><span class="meta-v">' + esc(orDash(r.assessmentsDone)) + '</span>' +
+            '<span class="meta-k">Converted</span><span class="meta-v">' + esc(orDash(r.converted)) + '</span>' +
+            '<span class="meta-k">Remarks</span><span class="meta-v">' + esc(orDash(r.remarks)) + '</span>' +
+          '</div>' +
+          '<div class="sc-photos">' +
+            compactThumbHtml(r.signInPhoto, 'Login pic', 'in-lbl') +
+            compactThumbHtml(r.signOutPhoto, 'Logout pic', 'out-lbl') +
+          '</div>' +
+        '</div>'
+      );
+    }).join('') : '<div class="empty">No attendance punched for this physio yet.</div>';
+  }
+
+  /* Page 3: single shift */
+  function renderDetail(body) {
+    var r = byId(S.shiftId);
+    if (!r) {
+      $('panelTitle').textContent = 'Shift';
+      $('panelSub').textContent = '';
+      body.innerHTML = '<div class="empty">Shift not found. It may have been removed &mdash; go back and pick another.</div>';
+      return;
+    }
+
+    $('panelTitle').textContent = orDash(r.physioName);
+    $('panelSub').innerHTML =
+      empBadge(r.empId) +
+      '<span>' + (r.unit ? esc(r.unit) + ' &middot; ' : '') + esc(fmtDay(r.signInDate)) + '</span>';
+
+    var distNote = '';
+    if (r.signOutTime && validPt(r.signInLat, r.signInLng) && validPt(r.signOutLat, r.signOutLng)) {
+      distNote = ' (' + haversineKm(Number(r.signInLat), Number(r.signInLng), Number(r.signOutLat), Number(r.signOutLng)) + ' from sign-in)';
+    }
+
+    body.innerHTML =
+      '<div class="summary">' +
+        '<div class="sum-box"><div class="sum-lbl">Status</div><div class="sum-val">' + esc(statusLabel(r)) + '</div></div>' +
+        '<div class="sum-box"><div class="sum-lbl">Duration</div><div class="sum-val">' + esc(durOf(r)) + '</div></div>' +
+      '</div>' +
+
+      '<div class="sec">' +
+        '<h3><span class="dot" style="background:var(--green)"></span>Sign in</h3>' +
+        '<div class="kv">' +
+          '<span class="kv-k">Date &amp; time</span><span class="kv-v">' + esc(fmtDT(r.signInTime)) + '</span>' +
+          '<span class="kv-k">Hospital</span><span class="kv-v">' + esc(orDash(r.hospitalName)) + '</span>' +
+          '<span class="kv-k">Location</span><span class="kv-v">' + esc(orDash(r.signInLocation)) + '</span>' +
+          '<span class="kv-k">In GPS Coordinates</span><span class="kv-v">' + gpsHtml(r.signInLat, r.signInLng) + '</span>' +
+        '</div>' +
+        detailPhotoHtml(r.signInPhoto, 'Login Photo') +
+      '</div>' +
+
+      '<div class="sec">' +
+        '<h3><span class="dot" style="background:var(--orange)"></span>Sign out</h3>' +
+        (r.signOutTime ? (
+          '<div class="kv">' +
+            '<span class="kv-k">Date &amp; time</span><span class="kv-v">' + esc(fmtDT(r.signOutTime)) + '</span>' +
+            '<span class="kv-k">Location</span><span class="kv-v">' + esc(orDash(r.signOutLocation) + distNote) + '</span>' +
+            '<span class="kv-k">Out GPS Coordinates</span><span class="kv-v">' + gpsHtml(r.signOutLat, r.signOutLng) + '</span>' +
+            '<span class="kv-k">PRE name</span><span class="kv-v">' + esc(orDash(r.preName)) + '</span>' +
+            '<span class="kv-k">Patients visited</span><span class="kv-v">' + esc(orDash(r.patientsVisited)) + '</span>' +
+            '<span class="kv-k">Assessments done</span><span class="kv-v">' + esc(orDash(r.assessmentsDone)) + '</span>' +
+            '<span class="kv-k">Converted</span><span class="kv-v">' + esc(orDash(r.converted)) + '</span>' +
+            '<span class="kv-k">Remarks</span><span class="kv-v">' + esc(orDash(r.remarks)) + '</span>' +
+          '</div>' +
+          detailPhotoHtml(r.signOutPhoto, 'Logout Photo')
+        ) : (
+          '<div class="kv">' +
+            '<span class="kv-k">Out GPS Coordinates</span><span class="kv-v">-</span>' +
+          '</div>' +
+          '<div class="nophoto">Not signed out yet (' + esc(statusLabel(r)) + ').</div>'
+        )) +
+      '</div>';
   }
 
   function render() {
@@ -1052,157 +978,26 @@
     if (S.view === 'list') {
       back.classList.add('hidden');
       tools.classList.remove('hidden');
-
-      var rangeAtt = S.att.filter(inRange);
-      $('panelTitle').textContent = 'Physios (' + S.profiles.length + ')';
-      $('panelSub').textContent = rangeAtt.length + ' shift' + (rangeAtt.length === 1 ? '' : 's') + ' on map for selected dates';
-
-      if (!S.profiles.length) {
-        body.innerHTML = '<div class="empty">No physio profiles found in Supabase yet.</div>';
-        return;
-      }
-
-      var q = S.search.trim().toLowerCase();
-      var filtered = S.profiles.filter(function (p) {
-        var all = shiftsFor(p.empId);
-        var last = all[0];
-
-        if (S.filter === 'Active' || S.filter === 'Completed' || S.filter === 'Missing') {
-          if (!last || statusOf(last) !== S.filter) return false;
-        }
-        if (q) {
-          var hay = (p.name + ' ' + p.unit + ' ' + p.empId + ' ' + (last ? last.hospitalName : '')).toLowerCase();
-          if (hay.indexOf(q) === -1) return false;
-        }
-        return true;
-      });
-
-      if (!filtered.length) {
-        body.innerHTML = '<div class="empty">No physios match your current search or filter.</div>';
-        return;
-      }
-
-      body.innerHTML = filtered.map(function (p) {
-        var all = shiftsFor(p.empId);
-        var last = all[0];
-        var st = last ? statusOf(last) : 'None';
-
-        var detail = last
-          ? '<div class="meta-grid">' +
-              '<span class="meta-k">Hospital</span><span class="meta-v">' + esc(last.hospitalName || '-') + '</span>' +
-              '<span class="meta-k">Last login</span><span class="meta-v">' + esc(fmtDT(last.signInTime)) + '</span>' +
-              '<span class="meta-k">Last logout</span><span class="meta-v">' + (last.signOutTime ? esc(fmtDT(last.signOutTime)) : esc(statusLabel(last))) + '</span>' +
-              '<span class="meta-k">Duration</span><span class="meta-v dur">' + esc(durOf(last)) + '</span>' +
-            '</div>'
-          : '<div class="meta-grid"><span class="meta-k">Status</span><span class="meta-v" style="color:var(--muted)">No shifts punched yet</span></div>';
-
-        return (
-          '<div class="pcard st-' + st + '" role="button" tabindex="0" data-emp="' + esc(p.empId) + '">' +
-            '<div class="row">' +
-              '<div>' +
-                '<div class="pname">' + esc(p.name) + '</div>' +
-                '<div class="punit">' + esc(p.unit || 'No unit') + ' &middot; ' + esc(p.empId) + '</div>' +
-              '</div>' +
-              (last ? '<span class="chip ' + st + '">' + esc(statusLabel(last)) + '</span>' : '') +
-            '</div>' +
-            detail +
-          '</div>'
-        );
-      }).join('');
-
-    } else if (S.view === 'shifts') {
-      back.classList.remove('hidden');
-      tools.classList.add('hidden');
-
-      var p = profileOf(S.empId);
-      var list = shiftsFor(S.empId);
-      $('panelTitle').textContent = p.name;
-      $('panelSub').textContent = (p.unit ? p.unit + ' · ' : '') + list.length + ' shift' + (list.length === 1 ? '' : 's') + ' (latest first)';
-
-      body.innerHTML = list.length ? list.map(function (r) {
-        var st = statusOf(r);
-        var outLocRow = r.signOutLocation
-          ? '<span class="meta-k">Out loc</span><span class="meta-v">' + esc(r.signOutLocation) + '</span>'
-          : '';
-        return (
-          '<div class="scard st-' + st + '" role="button" tabindex="0" data-shift="' + esc(r.id) + '">' +
-            '<div class="row">' +
-              '<div class="pname">' + esc(r.hospitalName || 'Hospital not entered') + '</div>' +
-              '<span class="chip ' + st + '">' + esc(statusLabel(r)) + '</span>' +
-            '</div>' +
-            '<div class="meta-grid">' +
-              '<span class="meta-k">Login</span><span class="meta-v">' + esc(fmtDT(r.signInTime)) + '</span>' +
-              '<span class="meta-k">In loc</span><span class="meta-v">' + esc(r.signInLocation || '-') + '</span>' +
-              '<span class="meta-k">Logout</span><span class="meta-v">' + (r.signOutTime ? esc(fmtDT(r.signOutTime)) : '-') + ' &middot; <span class="dur">' + esc(durOf(r)) + '</span></span>' +
-              outLocRow +
-            '</div>' +
-            '<div class="sc-photos">' +
-              compactThumbHtml(r.signInPhoto, 'Login pic', 'in-lbl') +
-              compactThumbHtml(r.signOutPhoto, 'Logout pic', 'out-lbl') +
-            '</div>' +
-          '</div>'
-        );
-      }).join('') : '<div class="empty">No attendance punched for this physio yet.</div>';
-
+      renderList(body);
     } else {
       back.classList.remove('hidden');
       tools.classList.add('hidden');
-
-      var r = byId(S.shiftId);
-      if (!r) {
-        body.innerHTML = '<div class="empty">Shift not found.</div>';
-        return;
-      }
-
-      $('panelTitle').textContent = r.physioName;
-      $('panelSub').textContent = (r.unit ? r.unit + ' · ' : '') + fmtDay(r.signInDate);
-
-      var distNote = '';
-      if (r.signOutTime && validPt(r.signInLat, r.signInLng) && validPt(r.signOutLat, r.signOutLng)) {
-        distNote = ' · ' + haversineKm(Number(r.signInLat), Number(r.signInLng), Number(r.signOutLat), Number(r.signOutLng)) + ' apart';
-      }
-
-      body.innerHTML =
-        '<div class="summary">' +
-          '<div class="sum-box"><div class="sum-lbl">Status</div><div class="sum-val">' + esc(statusLabel(r)) + '</div></div>' +
-          '<div class="sum-box"><div class="sum-lbl">Duration</div><div class="sum-val">' + esc(durOf(r)) + '</div></div>' +
-        '</div>' +
-
-        '<div class="sec">' +
-          '<h3><span class="dot" style="background:var(--green)"></span>Sign in</h3>' +
-          '<div class="kv">' +
-            '<span class="kv-k">Date &amp; time</span><span class="kv-v">' + esc(fmtDT(r.signInTime)) + '</span>' +
-            '<span class="kv-k">Hospital</span><span class="kv-v">' + esc(r.hospitalName || '-') + '</span>' +
-            '<span class="kv-k">Location</span><span class="kv-v">' + esc(r.signInLocation || '-') + '</span>' +
-          '</div>' +
-          detailPhotoHtml(r.signInPhoto, 'Login Photo') +
-        '</div>' +
-
-        '<div class="sec">' +
-          '<h3><span class="dot" style="background:var(--orange)"></span>Sign out</h3>' +
-          (r.signOutTime ? (
-            '<div class="kv">' +
-              '<span class="kv-k">Date &amp; time</span><span class="kv-v">' + esc(fmtDT(r.signOutTime)) + '</span>' +
-              '<span class="kv-k">Location</span><span class="kv-v">' + esc((r.signOutLocation || '-') + distNote) + '</span>' +
-              '<span class="kv-k">PRE name</span><span class="kv-v">' + esc(r.preName || '-') + '</span>' +
-              '<span class="kv-k">Patients visited</span><span class="kv-v">' + esc(r.patientsVisited || '-') + '</span>' +
-              '<span class="kv-k">Assessments done</span><span class="kv-v">' + esc(r.assessmentsDone || '-') + '</span>' +
-              '<span class="kv-k">Converted</span><span class="kv-v">' + esc(r.converted || '-') + '</span>' +
-              '<span class="kv-k">Remarks</span><span class="kv-v">' + esc(r.remarks || '-') + '</span>' +
-            '</div>' +
-            detailPhotoHtml(r.signOutPhoto, 'Logout Photo')
-          ) : '<div class="nophoto">Not signed out yet (' + esc(statusLabel(r)) + ').</div>') +
-        '</div>';
+      if (S.view === 'shifts') renderShifts(body);
+      else renderDetail(body);
     }
   }
 
   /* ---------------- Navigation & Lightbox ---------------- */
-  var prevView = 'list';
-
   function openLightbox(url, caption) {
     $('lightboxImg').src = url;
     $('lightboxCap').textContent = caption || '';
     $('lightbox').classList.remove('hidden');
+  }
+
+  function closeLightbox() {
+    $('lightbox').classList.add('hidden');
+    $('lightboxImg').removeAttribute('src');
+    $('lightboxCap').textContent = '';
   }
 
   function openProfile(emp) {
@@ -1216,8 +1011,8 @@
   function openShift(id) {
     var r = byId(id);
     if (!r) return;
-    prevView = (S.view === 'shifts' && S.empId === r.empId) ? 'shifts' : 'list';
-    if (prevView === 'list') S.empId = r.empId;
+    S.prevView = (S.view === 'shifts' && S.empId === r.empId) ? 'shifts' : 'list';
+    S.empId = r.empId;
     S.shiftId = id;
     S.view = 'detail';
     map.closePopup();
@@ -1227,11 +1022,7 @@
   }
 
   $('backBtn').addEventListener('click', function () {
-    if (S.view === 'detail') {
-      S.view = (prevView === 'shifts') ? 'shifts' : 'list';
-    } else {
-      S.view = 'list';
-    }
+    S.view = (S.view === 'detail' && S.prevView === 'shifts') ? 'shifts' : 'list';
     render();
     drawMap(false);
   });
@@ -1250,10 +1041,18 @@
     if (p) openProfile(p.getAttribute('data-emp'));
   });
 
-  $('lightbox').addEventListener('click', function () {
-    $('lightbox').classList.add('hidden');
-    $('lightboxImg').src = '';
-    $('lightboxCap').textContent = '';
+  $('panelBody').addEventListener('keydown', function (e) {
+    if (e.key !== 'Enter' && e.key !== ' ') return;
+    var card = e.target.closest && e.target.closest('[data-shift], [data-emp]');
+    if (!card || card !== e.target) return;
+    e.preventDefault();
+    if (card.hasAttribute('data-shift')) openShift(card.getAttribute('data-shift'));
+    else openProfile(card.getAttribute('data-emp'));
+  });
+
+  $('lightbox').addEventListener('click', closeLightbox);
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') { closeLightbox(); toggleCal(false); }
   });
 
   $('searchInput').addEventListener('input', function (e) {
@@ -1266,9 +1065,7 @@
     if (!btn) return;
     S.filter = btn.getAttribute('data-filter');
     var btns = $('statusFilterRow').querySelectorAll('.fchip');
-    for (var i = 0; i < btns.length; i++) {
-      btns[i].classList.toggle('active', btns[i] === btn);
-    }
+    for (var i = 0; i < btns.length; i++) btns[i].classList.toggle('active', btns[i] === btn);
     render();
   });
 
@@ -1327,7 +1124,8 @@
 
   $('cal').addEventListener('click', function (e) {
     e.stopPropagation();
-    var t = e.target;
+    var t = e.target.closest ? e.target.closest('button') : e.target;
+    if (!t) return;
     if (t.getAttribute('data-nav')) {
       S.calMonth.m += Number(t.getAttribute('data-nav'));
       if (S.calMonth.m < 0) { S.calMonth.m = 11; S.calMonth.y--; }
@@ -1345,7 +1143,8 @@
       S.from = S.to = day;
       S.pending = true;
       drawCal();
-      render();
+      renderTopStats();
+      $('rangeText').textContent = fmtDay(day);
     } else {
       if (day < S.from) { S.to = S.from; S.from = day; }
       else { S.to = day; }
@@ -1357,12 +1156,12 @@
   document.addEventListener('click', function () { toggleCal(false); });
 
   function afterRange() {
-    if (S.view !== 'list') S.view = 'list';
+    S.view = 'list';
     render();
     drawMap(false);
   }
 
-  /* ---------------- Direct Supabase Data Loading ---------------- */
+  /* ---------------- Supabase data loading ---------------- */
   async function fetchAllAttendance() {
     var all = [];
     var pageSize = 1000;
@@ -1384,9 +1183,7 @@
 
   function mapAttendanceRow(r, tk) {
     var signOutTime = r.sign_out_time || null;
-    var status = signOutTime
-      ? 'Completed'
-      : (r.sign_in_date < tk ? 'Signout Missing' : 'Active');
+    var status = signOutTime ? 'Completed' : (r.sign_in_date < tk ? 'Signout Missing' : 'Active');
     return {
       id: String(r.id),
       empId: String(r.emp_id || ''),
@@ -1395,10 +1192,10 @@
       signInDate: String(r.sign_in_date || ''),
       signInTime: String(r.sign_in_time || ''),
       signInLocation: String(r.sign_in_location || ''),
-      signInLat: Number(r.sign_in_lat || 0),
-      signInLng: Number(r.sign_in_lng || 0),
+      signInLat: r.sign_in_lat != null ? Number(r.sign_in_lat) : null,
+      signInLng: r.sign_in_lng != null ? Number(r.sign_in_lng) : null,
       hospitalName: String(r.hospital_name || ''),
-      signInPhoto: String(r.sign_in_photo || ''),
+      signInPhoto: r.sign_in_photo ? String(r.sign_in_photo) : '',
       signOutTime: signOutTime,
       signOutLocation: r.sign_out_location || null,
       signOutLat: r.sign_out_lat != null ? Number(r.sign_out_lat) : null,
@@ -1408,56 +1205,83 @@
       assessmentsDone: String(r.assessments_done || ''),
       converted: String(r.converted || ''),
       remarks: String(r.remarks || ''),
-      signOutPhoto: r.sign_out_photo || null,
+      signOutPhoto: r.sign_out_photo ? String(r.sign_out_photo) : '',
       duration: String(r.duration || ''),
       note: status
     };
   }
 
+  function showLoadError(msg) {
+    var l = $('loading');
+    l.classList.remove('hidden');
+    l.classList.add('failed');
+    $('loadingMsg').textContent = 'Could not load data: ' + msg;
+    $('retryBtn').classList.remove('hidden');
+    $('syncText').textContent = 'Sync error';
+    $('liveDot').classList.add('err');
+    $('refreshBtn').classList.remove('spinning');
+  }
+
+  var loadingNow = false;
   async function load(isAutoRefresh) {
+    if (!sb || loadingNow) return;
+    loadingNow = true;
     $('refreshBtn').classList.add('spinning');
     try {
       var tk = todayKey();
-      var [profRes, attRows] = await Promise.all([
+      var results = await Promise.all([
         sb.from('physio_profiles').select('emp_id, name, unit').order('name', { ascending: true }),
         fetchAllAttendance()
       ]);
-
+      var profRes = results[0];
       if (profRes.error) throw profRes.error;
 
       S.profiles = (profRes.data || []).map(function (p) {
         return { unit: p.unit || '', name: p.name || '', empId: p.emp_id || '' };
       });
-      S.att = attRows.map(function (r) { return mapAttendanceRow(r, tk); });
+      S.att = results[1].map(function (r) { return mapAttendanceRow(r, tk); });
 
       $('loading').classList.add('hidden');
+      $('liveDot').classList.remove('err');
       $('refreshBtn').classList.remove('spinning');
       $('syncText').textContent = 'Live · ' + fmtTimeOnly(new Date().toISOString());
 
       render();
       drawMap(Boolean(isAutoRefresh));
     } catch (err) {
-      $('refreshBtn').classList.remove('spinning');
-      $('loadingMsg').textContent = 'Could not load Supabase data: ' + (err && err.message ? err.message : err);
-      $('syncText').textContent = 'Sync error';
+      showLoadError(err && err.message ? err.message : err);
+    } finally {
+      loadingNow = false;
     }
   }
 
-  var rtTimer = null;
-  function scheduleReload() {
-    clearTimeout(rtTimer);
-    rtTimer = setTimeout(function () { load(true); }, 600);
+  $('retryBtn').addEventListener('click', function () {
+    var l = $('loading');
+    l.classList.remove('failed');
+    $('retryBtn').classList.add('hidden');
+    $('loadingMsg').textContent = 'Loading attendance data from Supabase...';
+    load(false);
+  });
+
+  if (sb) {
+    var rtTimer = null;
+    var scheduleReload = function () {
+      clearTimeout(rtTimer);
+      rtTimer = setTimeout(function () { load(true); }, 600);
+    };
+    try {
+      sb.channel('physiotrack-live')
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'attendance' }, scheduleReload)
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'physio_profiles' }, scheduleReload)
+        .subscribe();
+    } catch (e) { /* realtime is optional; the 60s poll below still keeps data fresh */ }
+
+    $('refreshBtn').addEventListener('click', function () { load(true); });
+    setInterval(function () { load(true); }, 60000);
+
+    render();
+    load(false);
   }
-  sb.channel('physiotrack-live')
-    .on('postgres_changes', { event: '*', schema: 'public', table: 'attendance' }, scheduleReload)
-    .on('postgres_changes', { event: '*', schema: 'public', table: 'physio_profiles' }, scheduleReload)
-    .subscribe();
-
-  $('refreshBtn').addEventListener('click', function () { load(true); });
-  setInterval(function () { load(true); }, 60000);
-
-  render();
-  load(false);
 })();
 </script>
 </body>
