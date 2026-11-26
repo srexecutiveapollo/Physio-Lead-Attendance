@@ -294,43 +294,53 @@
 
   /* ---------------- Map Photo Bubbles (Simple, Even, Round) ---------------- */
   .bub {
-    width: 42px;
-    height: 42px;
-    padding: 3px;
-    border-radius: 50%;
-    color: #fff;
-    font-family: 'Plus Jakarta Sans', sans-serif;
-    font-weight: 800;
-    font-size: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.28);
-    transition: transform 0.15s ease;
-  }
-  .bub:hover { transform: scale(1.1); }
-  .bub.Active, .bub.in { background: var(--blue); }
-  .bub.Completed, .bub.out { background: var(--green); }
-  .bub.Missing { background: var(--red); }
-  .bub span {
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  .bub img {
-    position: absolute;
-    top: 3px;
-    left: 3px;
-    width: calc(100% - 6px);
-    height: calc(100% - 6px);
-    object-fit: cover;
-    border-radius: 50%;
-    display: block;
-  }
+  width: 42px;
+  height: 42px;
+  padding: 0;
+  border-radius: 50%;
+  border: 3px solid var(--blue);          /* ring colour */
+  background: var(--blue);
+  color: #fff;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 800;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  box-sizing: border-box;
+  box-shadow: 0 0 0 2px #fff, 0 3px 10px rgba(0, 0, 0, 0.3);  /* white outer edge */
+  transition: transform 0.15s ease;
+}
+.bub:hover { transform: scale(1.1); }
+.bub.Active, .bub.in { border-color: var(--blue);  background: var(--blue); }
+.bub.Completed, .bub.out { border-color: var(--green); background: var(--green); }
+.bub.Missing { border-color: var(--red);   background: var(--red); }
+.bub span {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+/* Higher specificity + !important so Leaflet's "width:auto" can't override */
+.leaflet-container .leaflet-marker-pane .bub img.bub-img {
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  max-width: none !important;
+  max-height: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  object-fit: cover;
+  object-position: center;
+  border-radius: 50%;
+  display: block;
+}
 
   /* ---------------- Map Popups ---------------- */
   .leaflet-popup-content-wrapper { border-radius: 14px; box-shadow: var(--shadow-md); }
