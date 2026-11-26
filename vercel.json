@@ -1,0 +1,7 @@
+{
+  "rewrites": [
+    { "source": "/", "destination": "/punch.html" },
+    { "source": "/punch", "destination": "/punch.html" },
+    { "source": "/map", "destination": "/map.html" }
+  ]
+}
