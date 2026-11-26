@@ -14,6 +14,7 @@
     --blue-soft: #E6F4F8;
     --blue-line: #9FD3E1;
     --orange: #F16F21;
+    --orange-dark: #D25810;
     --orange-soft: #FFF1EA;
     --yellow: #FCB913;
     --green: #1E9E63;
@@ -26,7 +27,6 @@
     --muted: #5E727C;
     --border: #DCE6EB;
     --shadow-sm: 0 2px 8px rgba(18, 35, 43, 0.06);
-    --shadow-md: 0 10px 28px rgba(0, 71, 90, 0.12);
     --radius: 16px;
   }
 
@@ -57,8 +57,8 @@
     box-shadow: var(--shadow-sm);
   }
   .logo {
-    width: 40px;
-    height: 40px;
+    width: 42px;
+    height: 42px;
     border-radius: 11px;
     border: 1px solid var(--border);
     display: flex;
@@ -118,6 +118,7 @@
     text-transform: uppercase;
     letter-spacing: 0.03em;
   }
+  .req { color: var(--red); }
   .input, .select, .textarea {
     width: 100%;
     border: 1px solid var(--border);
@@ -133,8 +134,6 @@
     box-shadow: 0 0 0 3px rgba(0, 125, 157, 0.12);
   }
   .textarea { min-height: 76px; resize: vertical; }
-
-  .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
   .row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
 
   .profile-pill {
@@ -159,6 +158,11 @@
     padding: 14px 16px;
     margin-bottom: 14px;
   }
+  .active-banner.overdue {
+    background: var(--orange-soft);
+    border-color: #F4C3A3;
+    border-left-color: var(--orange);
+  }
   .active-banner .ab-top {
     display: flex;
     justify-content: space-between;
@@ -174,8 +178,11 @@
     padding: 3px 9px;
     border-radius: 999px;
   }
-  .ab-timer { font-weight: 800; font-size: 14px; color: #136F44; }
+  .active-banner.overdue .ab-badge { background: var(--orange); }
+  .ab-timer { font-weight: 800; font-size: 14px; color: #136F44; font-variant-numeric: tabular-nums; }
+  .active-banner.overdue .ab-timer { color: #A8480E; }
   .ab-meta { font-size: 13px; color: #184931; line-height: 1.5; }
+  .active-banner.overdue .ab-meta { color: #6E310B; }
 
   .gps-box {
     background: #F8FBFD;
@@ -200,6 +207,11 @@
     font-weight: 700;
     white-space: nowrap;
     flex-shrink: 0;
+  }
+  .mini-btn.warn {
+    border-color: #F2B58D;
+    background: var(--orange-soft);
+    color: #A8480E;
   }
 
   .photo-box {
@@ -229,12 +241,7 @@
     overflow: hidden;
     border: 1px solid var(--border);
   }
-  .photo-preview img {
-    width: 100%;
-    max-height: 240px;
-    object-fit: cover;
-    display: block;
-  }
+  .photo-preview img { width: 100%; max-height: 240px; object-fit: cover; display: block; }
   .photo-meta {
     font-size: 11px;
     font-weight: 700;
@@ -244,7 +251,103 @@
     border-top: 1px solid var(--border);
   }
 
-  .submit-btn {
+  /* ---------------- Swipe to Confirm Slider ---------------- */
+  .swipe-track {
+    position: relative;
+    height: 56px;
+    border-radius: 999px;
+    background: var(--blue-soft);
+    border: 2px solid var(--blue-line);
+    overflow: hidden;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: none;
+    margin-top: 8px;
+  }
+  .swipe-track.out {
+    background: var(--orange-soft);
+    border-color: #F4B992;
+  }
+  .swipe-track.disabled {
+    opacity: 0.72;
+    pointer-events: none;
+  }
+  .swipe-fill {
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 52px;
+    background: var(--blue);
+    border-radius: 999px;
+    transition: width 0.22s ease;
+  }
+  .swipe-track.out .swipe-fill { background: var(--orange); }
+  .swipe-track.dragging .swipe-fill,
+  .swipe-track.dragging .swipe-thumb { transition: none; }
+
+  .swipe-label {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-left: 36px;
+    font-size: 14px;
+    font-weight: 800;
+    color: var(--blue-dark);
+    pointer-events: none;
+    letter-spacing: 0.01em;
+  }
+  .swipe-track.out .swipe-label { color: #A8480E; }
+  .swipe-track.confirmed .swipe-label { color: #fff; padding-left: 0; }
+
+  .swipe-thumb {
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    background: var(--blue);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 3px 10px rgba(0, 56, 72, 0.28);
+    cursor: grab;
+    touch-action: none;
+    transition: transform 0.22s ease;
+    z-index: 2;
+  }
+  .swipe-track.out .swipe-thumb { background: var(--orange); }
+  .swipe-thumb:active { cursor: grabbing; }
+
+  /* ---------------- Completed Shift Summary ---------------- */
+  .done-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--green-soft);
+    color: #136F44;
+    border-radius: 999px;
+    padding: 4px 11px;
+    font-size: 12px;
+    font-weight: 800;
+  }
+  .summary-grid {
+    display: grid;
+    grid-template-columns: 128px 1fr;
+    gap: 8px 10px;
+    font-size: 13px;
+    background: #F8FBFD;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 13px;
+    margin-bottom: 14px;
+  }
+  .sg-k { color: var(--muted); font-weight: 600; }
+  .sg-v { color: var(--ink); font-weight: 700; word-break: break-word; }
+
+  .primary-btn {
     width: 100%;
     border: none;
     border-radius: 13px;
@@ -254,12 +357,25 @@
     color: #fff;
     background: var(--blue);
     box-shadow: var(--shadow-sm);
-    margin-top: 6px;
   }
-  .submit-btn:hover { background: var(--blue-dark); }
-  .submit-btn.out { background: var(--orange); }
-  .submit-btn.out:hover { background: #D85B10; }
-  .submit-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+  .primary-btn:hover { background: var(--blue-dark); }
+
+  /* ---------------- Unclosed Previous-Day Shifts ---------------- */
+  .unclosed-card {
+    border-left: 4px solid var(--orange);
+  }
+  .pending-item {
+    border: 1px solid #F4C3A3;
+    border-left: 4px solid var(--orange);
+    border-radius: 12px;
+    padding: 12px;
+    margin-bottom: 8px;
+    background: #FFF9F5;
+    font-size: 12px;
+  }
+  .pending-item:last-child { margin-bottom: 0; }
+  .pi-top { display: flex; justify-content: space-between; align-items: center; gap: 8px; font-weight: 700; font-size: 13px; margin-bottom: 4px; }
+  .pi-sub { color: #6E310B; line-height: 1.5; margin-bottom: 8px; }
 
   .toast {
     padding: 12px 14px;
@@ -270,20 +386,6 @@
   }
   .toast.ok { background: var(--green-soft); color: #136F44; border: 1px solid #9BD9BA; }
   .toast.err { background: var(--red-soft); color: var(--red); border: 1px solid #F3B7B7; }
-
-  .history-item {
-    border: 1px solid var(--border);
-    border-left: 4px solid var(--blue);
-    border-radius: 12px;
-    padding: 11px 12px;
-    margin-bottom: 8px;
-    font-size: 12px;
-    background: #FCFEFF;
-  }
-  .history-item.Active { border-left-color: var(--green); }
-  .history-item.Missing { border-left-color: var(--orange); }
-  .h-top { display: flex; justify-content: space-between; font-weight: 700; font-size: 13px; margin-bottom: 4px; }
-  .h-sub { color: var(--muted); line-height: 1.45; }
 
   .loading-overlay {
     position: fixed;
@@ -312,7 +414,9 @@
 <body>
 
 <header class="topbar">
-  <div class="logo" id="logo">PT</div>
+  <div class="logo" id="logo">
+    <img src="/logo.png" alt="Logo" onerror="this.parentNode.textContent='PT'" />
+  </div>
   <div>
     <div class="brand-title">Physio Lead Attendance</div>
     <div class="brand-sub">Apollo Home Care</div>
@@ -324,14 +428,11 @@
 <main class="wrap">
   <div class="toast hidden" id="toast"></div>
 
-  <!-- Physio Selector -->
+  <!-- Physio Selector (no search filter) -->
   <section class="card">
     <div class="card-title">
       <span>Select Physio</span>
       <button class="mini-btn" id="refreshBtn" type="button">Refresh</button>
-    </div>
-    <div class="field">
-      <input class="input" id="profileSearch" type="search" placeholder="Filter by name, unit, or Emp ID..." autocomplete="off" />
     </div>
     <div class="field">
       <select class="select" id="profileSelect">
@@ -344,10 +445,20 @@
   <!-- Active Shift Banner -->
   <section class="active-banner hidden" id="activeBanner">
     <div class="ab-top">
-      <span class="ab-badge">SHIFT ACTIVE</span>
-      <span class="ab-timer" id="activeTimer">0m</span>
+      <span class="ab-badge" id="activeBadge">SHIFT ACTIVE</span>
+      <span class="ab-timer" id="activeTimer">00:00:00</span>
     </div>
     <div class="ab-meta" id="activeMeta"></div>
+  </section>
+
+  <!-- SHIFT COMPLETED SUMMARY CARD -->
+  <section class="card hidden" id="completedCard">
+    <div class="card-title">
+      <span>Shift Details</span>
+      <span class="done-badge">&#10003; Signed Out</span>
+    </div>
+    <div class="summary-grid" id="completedSummary"></div>
+    <button class="primary-btn" id="newSignInBtn" type="button">Sign In</button>
   </section>
 
   <!-- SIGN IN FORM -->
@@ -355,15 +466,15 @@
     <div class="card-title">Sign In (Start Shift)</div>
 
     <div class="field">
-      <label class="label" for="hospitalInput">Hospital Name *</label>
+      <label class="label" for="hospitalInput">Hospital Name <span class="req">*</span></label>
       <input class="input" id="hospitalInput" type="text" placeholder="Enter hospital / clinic name" required />
     </div>
 
     <div class="field">
-      <label class="label">Current GPS Location *</label>
+      <label class="label">Current GPS Location <span class="req">*</span></label>
       <div class="gps-box">
         <div style="min-width:0;flex:1">
-          <div class="gps-text" id="inGpsText">Tap Refresh GPS to capture location</div>
+          <div class="gps-text" id="inGpsText">Fetching GPS location...</div>
           <div class="gps-coords" id="inGpsCoords"></div>
         </div>
         <button class="mini-btn" id="inGpsBtn" type="button">Refresh GPS</button>
@@ -371,7 +482,7 @@
     </div>
 
     <div class="field">
-      <label class="label">Sign-In Selfie / Photo * (Auto-Compressed)</label>
+      <label class="label">Sign-In Selfie / Photo <span class="req">*</span> (Auto-Compressed)</label>
       <div class="photo-box">
         <label class="photo-btn" for="inPhotoInput">Take / Upload Photo</label>
         <input class="hidden" id="inPhotoInput" type="file" accept="image/*" capture="user" />
@@ -382,43 +493,52 @@
       </div>
     </div>
 
-    <button class="submit-btn" id="signInBtn" type="button">Punch Sign In</button>
+    <div class="swipe-track" id="swipeSignIn" role="slider" aria-label="Swipe right to Sign In">
+      <div class="swipe-fill"></div>
+      <div class="swipe-label">Swipe right to Sign In &rarr;</div>
+      <div class="swipe-thumb">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </div>
+    </div>
   </section>
 
   <!-- SIGN OUT FORM -->
   <section class="card hidden" id="signOutCard">
-    <div class="card-title">Sign Out (End Shift)</div>
+    <div class="card-title">
+      <span>Sign Out (End Shift)</span>
+      <button class="mini-btn hidden" id="cancelOverdueBtn" type="button">Back</button>
+    </div>
 
     <div class="field">
-      <label class="label" for="preNameInput">PRE Name</label>
-      <input class="input" id="preNameInput" type="text" placeholder="Enter PRE name" />
+      <label class="label" for="preNameInput">PRE Name <span class="req">*</span></label>
+      <input class="input" id="preNameInput" type="text" placeholder="Enter PRE name" required />
     </div>
 
     <div class="row-3 field">
       <div>
-        <label class="label" for="visitedInput">Visited</label>
-        <input class="input" id="visitedInput" type="number" min="0" inputmode="numeric" placeholder="0" />
+        <label class="label" for="visitedInput">Visited <span class="req">*</span></label>
+        <input class="input" id="visitedInput" type="number" min="0" inputmode="numeric" placeholder="0" required />
       </div>
       <div>
-        <label class="label" for="assessedInput">Assessed</label>
-        <input class="input" id="assessedInput" type="number" min="0" inputmode="numeric" placeholder="0" />
+        <label class="label" for="assessedInput">Assessed <span class="req">*</span></label>
+        <input class="input" id="assessedInput" type="number" min="0" inputmode="numeric" placeholder="0" required />
       </div>
       <div>
-        <label class="label" for="convertedInput">Converted</label>
-        <input class="input" id="convertedInput" type="number" min="0" inputmode="numeric" placeholder="0" />
+        <label class="label" for="convertedInput">Converted <span class="req">*</span></label>
+        <input class="input" id="convertedInput" type="number" min="0" inputmode="numeric" placeholder="0" required />
       </div>
     </div>
 
     <div class="field">
-      <label class="label" for="remarksInput">Remarks</label>
-      <textarea class="textarea" id="remarksInput" placeholder="Visit summary / remarks..."></textarea>
+      <label class="label" for="remarksInput">Remarks <span class="req">*</span></label>
+      <textarea class="textarea" id="remarksInput" placeholder="Visit summary / remarks..." required></textarea>
     </div>
 
     <div class="field">
-      <label class="label">Sign-Out GPS Location *</label>
+      <label class="label">Sign-Out GPS Location <span class="req">*</span></label>
       <div class="gps-box">
         <div style="min-width:0;flex:1">
-          <div class="gps-text" id="outGpsText">Tap Refresh GPS to capture location</div>
+          <div class="gps-text" id="outGpsText">Fetching GPS location...</div>
           <div class="gps-coords" id="outGpsCoords"></div>
         </div>
         <button class="mini-btn" id="outGpsBtn" type="button">Refresh GPS</button>
@@ -426,7 +546,7 @@
     </div>
 
     <div class="field">
-      <label class="label">Sign-Out Selfie / Photo * (Auto-Compressed)</label>
+      <label class="label">Sign-Out Selfie / Photo <span class="req">*</span> (Auto-Compressed)</label>
       <div class="photo-box">
         <label class="photo-btn" for="outPhotoInput">Take / Upload Photo</label>
         <input class="hidden" id="outPhotoInput" type="file" accept="image/*" capture="user" />
@@ -437,13 +557,19 @@
       </div>
     </div>
 
-    <button class="submit-btn out" id="signOutBtn" type="button">Punch Sign Out</button>
+    <div class="swipe-track out" id="swipeSignOut" role="slider" aria-label="Swipe right to Sign Out">
+      <div class="swipe-fill"></div>
+      <div class="swipe-label">Swipe right to Sign Out &rarr;</div>
+      <div class="swipe-thumb">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </div>
+    </div>
   </section>
 
-  <!-- Recent Shifts -->
-  <section class="card hidden" id="historyCard">
-    <div class="card-title">Recent Shifts</div>
-    <div id="historyList"></div>
+  <!-- ONLY Unclosed Active Shifts from Previous Days (when sign-out was missed) -->
+  <section class="card unclosed-card hidden" id="unclosedCard">
+    <div class="card-title">Pending Active Shifts (Sign-Out Not Punched)</div>
+    <div id="unclosedList"></div>
   </section>
 </main>
 
@@ -458,7 +584,6 @@
 (function () {
   'use strict';
 
-  // Support legacy ?page=map links seamlessly
   var params = new URLSearchParams(window.location.search);
   if (params.get('page') === 'map' || params.get('map') === '1') {
     window.location.replace('/map');
@@ -492,7 +617,7 @@
     });
   }
 
-  function formatDuration(startIso, endIso) {
+  function formatDurationSaved(startIso, endIso) {
     var s = new Date(startIso).getTime();
     var e = new Date(endIso).getTime();
     if (isNaN(s) || isNaN(e) || e < s) return '0m';
@@ -500,6 +625,16 @@
     var h = Math.floor(mins / 60);
     var m = mins % 60;
     return h > 0 ? (h + 'h ' + m + 'm') : (m + 'm');
+  }
+
+  function formatLiveTimer(startIso) {
+    var s = new Date(startIso).getTime();
+    if (isNaN(s)) return '00:00:00';
+    var totalSec = Math.max(0, Math.floor((Date.now() - s) / 1000));
+    var h = Math.floor(totalSec / 3600);
+    var m = Math.floor((totalSec % 3600) / 60);
+    var sec = totalSec % 60;
+    return String(h).padStart(2, '0') + ':' + String(m).padStart(2, '0') + ':' + String(sec).padStart(2, '0');
   }
 
   function sanitizePart(str) {
@@ -518,24 +653,102 @@
     $('toast').classList.add('hidden');
   }
 
+  var state = {
+    profiles: [],
+    selectedEmpId: localStorage.getItem('pt_emp_id') || '',
+    activeShift: null,        // Currently open shift shown in Sign Out form (today or selected overdue)
+    isOverdueSelected: false, // True when user clicked "Sign Out" on a previous day's unclosed shift
+    unclosedShifts: [],       // Open shifts from previous days (sign_out_time is null & date < today)
+    lastCompletedShift: null, // Shown in completed summary card until user clicks "Sign In"
+    forceShowSignIn: false,
+    gps: { lat: 0, lng: 0, address: '', ready: false },
+    inPhotoBlob: null,
+    outPhotoBlob: null
+  };
+
+  /* ---------------- Live Clock & Active Timer (updates every 1s) ---------------- */
   function updateClock() {
     $('clockPill').textContent = new Date().toLocaleTimeString('en-IN', {
       timeZone: TZ, hour: '2-digit', minute: '2-digit', hour12: true
     });
     if (state.activeShift) {
-      $('activeTimer').textContent = formatDuration(state.activeShift.sign_in_time, new Date().toISOString()) + ' running';
+      $('activeTimer').textContent = formatLiveTimer(state.activeShift.sign_in_time);
     }
   }
 
-  var state = {
-    profiles: [],
-    selectedEmpId: localStorage.getItem('pt_emp_id') || '',
-    activeShift: null,
-    recentShifts: [],
-    gps: { lat: 0, lng: 0, address: '', ready: false },
-    inPhotoBlob: null,
-    outPhotoBlob: null
-  };
+  /* ---------------- Swipe Slider Component ---------------- */
+  function createSwipeSlider(trackId, defaultText, onConfirm) {
+    var track = $(trackId);
+    var thumb = track.querySelector('.swipe-thumb');
+    var fill = track.querySelector('.swipe-fill');
+    var label = track.querySelector('.swipe-label');
+
+    var dragging = false;
+    var startX = 0;
+    var currentX = 0;
+    var maxX = 0;
+    var locked = false;
+
+    function setPos(px) {
+      currentX = Math.max(0, Math.min(maxX, px));
+      thumb.style.transform = 'translateX(' + currentX + 'px)';
+      fill.style.width = (currentX + 52) + 'px';
+    }
+
+    function reset(text) {
+      locked = false;
+      dragging = false;
+      track.classList.remove('dragging', 'confirmed', 'disabled');
+      label.innerHTML = text || defaultText;
+      thumb.style.transform = 'translateX(0px)';
+      fill.style.width = '52px';
+    }
+
+    function setBusy(msg) {
+      locked = true;
+      track.classList.remove('dragging');
+      track.classList.add('confirmed', 'disabled');
+      maxX = Math.max(0, track.clientWidth - thumb.offsetWidth - 10);
+      thumb.style.transform = 'translateX(' + maxX + 'px)';
+      fill.style.width = '100%';
+      label.textContent = msg;
+    }
+
+    thumb.addEventListener('pointerdown', function (e) {
+      if (locked) return;
+      dragging = true;
+      maxX = Math.max(0, track.clientWidth - thumb.offsetWidth - 10);
+      startX = e.clientX - currentX;
+      track.classList.add('dragging');
+      try { thumb.setPointerCapture(e.pointerId); } catch (_) {}
+    });
+
+    thumb.addEventListener('pointermove', function (e) {
+      if (!dragging || locked) return;
+      setPos(e.clientX - startX);
+    });
+
+    function finishDrag(e) {
+      if (!dragging || locked) return;
+      dragging = false;
+      track.classList.remove('dragging');
+      try { thumb.releasePointerCapture(e.pointerId); } catch (_) {}
+
+      if (maxX > 0 && currentX >= maxX * 0.85) {
+        onConfirm();
+      } else {
+        setPos(0);
+      }
+    }
+
+    thumb.addEventListener('pointerup', finishDrag);
+    thumb.addEventListener('pointercancel', finishDrag);
+
+    return { reset: reset, setBusy: setBusy };
+  }
+
+  var swipeInCtrl = createSwipeSlider('swipeSignIn', 'Swipe right to Sign In &rarr;', handleSignIn);
+  var swipeOutCtrl = createSwipeSlider('swipeSignOut', 'Swipe right to Sign Out &rarr;', handleSignOut);
 
   /* ---------------- Image Compression (Canvas -> JPEG ~50-120 KB) ---------------- */
   function compressImage(file, maxSide, quality) {
@@ -557,16 +770,12 @@
           var canvas = document.createElement('canvas');
           canvas.width = cw;
           canvas.height = ch;
-          var ctx = canvas.getContext('2d');
-          ctx.drawImage(img, 0, 0, cw, ch);
+          canvas.getContext('2d').drawImage(img, 0, 0, cw, ch);
 
           canvas.toBlob(function (blob) {
             if (!blob) return reject(new Error('Image compression failed'));
-            // If still > 160 KB, re-compress slightly tighter
             if (blob.size > 160 * 1024 && quality > 0.45) {
-              canvas.toBlob(function (smaller) {
-                resolve(smaller || blob);
-              }, 'image/jpeg', 0.48);
+              canvas.toBlob(function (smaller) { resolve(smaller || blob); }, 'image/jpeg', 0.48);
             } else {
               resolve(blob);
             }
@@ -591,8 +800,7 @@
     });
     if (up.error) throw new Error('Photo upload failed: ' + up.error.message);
 
-    var pub = sb.storage.from(BUCKET).getPublicUrl(filePath);
-    return pub.data.publicUrl;
+    return sb.storage.from(BUCKET).getPublicUrl(filePath).data.publicUrl;
   }
 
   /* ---------------- GPS Capture + Reverse Geocode ---------------- */
@@ -621,13 +829,9 @@
         );
         if (r.ok) {
           var j = await r.json();
-          if (j && j.display_name) {
-            state.gps.address = j.display_name;
-          }
+          if (j && j.display_name) state.gps.address = j.display_name;
         }
-      } catch (e) {
-        // Keep coordinate fallback
-      }
+      } catch (_) {}
       txtEl.textContent = state.gps.address;
     }, function (err) {
       state.gps.ready = false;
@@ -635,17 +839,11 @@
     }, { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 });
   }
 
-  /* ---------------- Data Loading from Supabase ---------------- */
-  function renderProfileOptions(filterText) {
+  /* ---------------- Data Loading ---------------- */
+  function renderProfileOptions() {
     var sel = $('profileSelect');
-    var q = String(filterText || '').trim().toLowerCase();
-    var list = state.profiles.filter(function (p) {
-      if (!q) return true;
-      return (p.name + ' ' + p.unit + ' ' + p.emp_id).toLowerCase().indexOf(q) !== -1;
-    });
-
-    sel.innerHTML = '<option value="">-- Choose your name (' + list.length + ') --</option>' +
-      list.map(function (p) {
+    sel.innerHTML = '<option value="">-- Choose your name --</option>' +
+      state.profiles.map(function (p) {
         var selected = p.emp_id === state.selectedEmpId ? ' selected' : '';
         return '<option value="' + esc(p.emp_id) + '"' + selected + '>' +
           esc(p.name) + ' (' + esc(p.emp_id) + (p.unit ? ' - ' + esc(p.unit) : '') + ')' +
@@ -658,20 +856,11 @@
     $('loading').classList.remove('hidden');
 
     try {
-      var [profRes, setRes] = await Promise.all([
-        sb.from('physio_profiles').select('emp_id, name, unit').order('name', { ascending: true }),
-        sb.from('app_settings').select('key, value').eq('key', 'logo_url').maybeSingle()
-      ]);
-
+      var profRes = await sb.from('physio_profiles').select('emp_id, name, unit').order('name', { ascending: true });
       if (profRes.error) throw profRes.error;
       state.profiles = profRes.data || [];
 
-      if (setRes.data && setRes.data.value) {
-        $('logo').innerHTML = '<img src="' + esc(setRes.data.value) + '" referrerpolicy="no-referrer" alt="Logo" />';
-        $('logo').firstChild.onerror = function () { $('logo').textContent = 'PT'; };
-      }
-
-      renderProfileOptions($('profileSearch').value);
+      renderProfileOptions();
       if (state.selectedEmpId && state.profiles.some(function (p) { return p.emp_id === state.selectedEmpId; })) {
         await selectPhysio(state.selectedEmpId);
       }
@@ -682,7 +871,8 @@
     }
   }
 
-  async function selectPhysio(empId) {
+  async function selectPhysio(empId, opts) {
+    opts = opts || {};
     state.selectedEmpId = empId;
     if (empId) localStorage.setItem('pt_emp_id', empId);
     else localStorage.removeItem('pt_emp_id');
@@ -691,14 +881,19 @@
     state.outPhotoBlob = null;
     $('inPhotoPreview').classList.add('hidden');
     $('outPhotoPreview').classList.add('hidden');
+    $('inPhotoInput').value = '';
+    $('outPhotoInput').value = '';
+    swipeInCtrl.reset();
+    swipeOutCtrl.reset();
 
     var profile = state.profiles.find(function (p) { return p.emp_id === empId; });
     if (!profile) {
       $('profileMeta').classList.add('hidden');
       $('activeBanner').classList.add('hidden');
+      $('completedCard').classList.add('hidden');
       $('signInCard').classList.add('hidden');
       $('signOutCard').classList.add('hidden');
-      $('historyCard').classList.add('hidden');
+      $('unclosedCard').classList.add('hidden');
       return;
     }
 
@@ -707,62 +902,112 @@
       '<span>ID: <b>' + esc(profile.emp_id) + '</b></span>';
     $('profileMeta').classList.remove('hidden');
 
-    var attRes = await sb
-      .from('attendance')
-      .select('*')
-      .eq('emp_id', empId)
-      .order('sign_in_time', { ascending: false })
-      .limit(10);
+    var tk = todayKey();
+    var [openRes, todayDoneRes] = await Promise.all([
+      sb.from('attendance').select('*').eq('emp_id', empId).is('sign_out_time', null).order('sign_in_time', { ascending: false }),
+      sb.from('attendance').select('*').eq('emp_id', empId).eq('sign_in_date', tk).not('sign_out_time', 'is', null).order('sign_out_time', { ascending: false }).limit(1)
+    ]);
 
-    if (attRes.error) {
-      showToast('Could not load shifts: ' + attRes.error.message, 'err');
+    if (openRes.error) {
+      showToast('Could not load shifts: ' + openRes.error.message, 'err');
       return;
     }
 
-    var rows = attRes.data || [];
-    var tk = todayKey();
-    state.recentShifts = rows;
-    state.activeShift = rows.find(function (r) {
-      return r.sign_in_date === tk && !r.sign_out_time;
-    }) || null;
+    var openRows = openRes.data || [];
+    var todayActive = openRows.find(function (r) { return r.sign_in_date === tk; }) || null;
+    state.unclosedShifts = openRows.filter(function (r) { return r.sign_in_date < tk; });
+
+    state.activeShift = todayActive;
+    state.isOverdueSelected = false;
+
+    if (opts.justCompleted) {
+      state.lastCompletedShift = opts.justCompleted;
+      state.forceShowSignIn = false;
+    } else if (!todayActive && todayDoneRes.data && todayDoneRes.data.length) {
+      state.lastCompletedShift = todayDoneRes.data[0];
+      state.forceShowSignIn = false;
+    } else {
+      state.lastCompletedShift = null;
+      state.forceShowSignIn = false;
+    }
+
+    renderView();
+  }
+
+  function renderView() {
+    var banner = $('activeBanner');
+    var signInCard = $('signInCard');
+    var signOutCard = $('signOutCard');
+    var completedCard = $('completedCard');
+    var cancelBtn = $('cancelOverdueBtn');
 
     if (state.activeShift) {
-      $('activeBanner').classList.remove('hidden');
+      banner.classList.remove('hidden');
+      banner.classList.toggle('overdue', state.isOverdueSelected);
+      $('activeBadge').textContent = state.isOverdueSelected ? 'UNCLOSED SHIFT (PREVIOUS DAY)' : 'SHIFT ACTIVE';
       $('activeMeta').innerHTML =
         '<b>' + esc(state.activeShift.hospital_name || 'Hospital') + '</b><br>' +
         'Signed in: ' + esc(fmtDT(state.activeShift.sign_in_time)) + '<br>' +
         'Location: ' + esc(state.activeShift.sign_in_location || '-');
-      $('signInCard').classList.add('hidden');
-      $('signOutCard').classList.remove('hidden');
+
+      signInCard.classList.add('hidden');
+      completedCard.classList.add('hidden');
+      signOutCard.classList.remove('hidden');
+      cancelBtn.classList.toggle('hidden', !state.isOverdueSelected);
+      updateClock();
+      captureGps();
+    } else if (state.lastCompletedShift && !state.forceShowSignIn) {
+      var r = state.lastCompletedShift;
+      banner.classList.add('hidden');
+      signInCard.classList.add('hidden');
+      signOutCard.classList.add('hidden');
+      completedCard.classList.remove('hidden');
+
+      $('completedSummary').innerHTML =
+        '<span class="sg-k">Hospital Name</span><span class="sg-v">' + esc(r.hospital_name || '-') + '</span>' +
+        '<span class="sg-k">Sign In</span><span class="sg-v">' + esc(fmtDT(r.sign_in_time)) + '</span>' +
+        '<span class="sg-k">Sign Out</span><span class="sg-v">' + esc(fmtDT(r.sign_out_time)) + '</span>' +
+        '<span class="sg-k">Duration</span><span class="sg-v">' + esc(r.duration || '-') + '</span>' +
+        '<span class="sg-k">PRE Name</span><span class="sg-v">' + esc(r.pre_name || '-') + '</span>' +
+        '<span class="sg-k">Patients Visited</span><span class="sg-v">' + esc(r.patients_visited || '0') + '</span>' +
+        '<span class="sg-k">Assessments Done</span><span class="sg-v">' + esc(r.assessments_done || '0') + '</span>' +
+        '<span class="sg-k">Converted</span><span class="sg-v">' + esc(r.converted || '0') + '</span>' +
+        '<span class="sg-k">Remarks</span><span class="sg-v">' + esc(r.remarks || '-') + '</span>';
     } else {
-      $('activeBanner').classList.add('hidden');
-      $('signOutCard').classList.add('hidden');
-      $('signInCard').classList.remove('hidden');
+      banner.classList.add('hidden');
+      completedCard.classList.add('hidden');
+      signOutCard.classList.add('hidden');
+      signInCard.classList.remove('hidden');
+      captureGps();
     }
 
-    renderHistory();
-    updateClock();
-    captureGps();
+    renderUnclosedShifts();
   }
 
-  function renderHistory() {
-    var list = state.recentShifts;
+  function renderUnclosedShifts() {
+    var card = $('unclosedCard');
+    var list = state.unclosedShifts.filter(function (r) {
+      return !state.activeShift || r.id !== state.activeShift.id;
+    });
+
     if (!list.length) {
-      $('historyCard').classList.add('hidden');
+      card.classList.add('hidden');
       return;
     }
-    var tk = todayKey();
-    $('historyCard').classList.remove('hidden');
-    $('historyList').innerHTML = list.map(function (r) {
-      var st = r.sign_out_time ? 'Completed' : (r.sign_in_date < tk ? 'Missing' : 'Active');
-      var stLabel = st === 'Missing' ? 'Signout missing' : st;
+
+    card.classList.remove('hidden');
+    $('unclosedList').innerHTML = list.map(function (r) {
       return (
-        '<div class="history-item ' + st + '">' +
-          '<div class="h-top"><span>' + esc(r.hospital_name || 'Hospital') + '</span><span>' + esc(stLabel) + '</span></div>' +
-          '<div class="h-sub">' +
-            'In: ' + esc(fmtDT(r.sign_in_time)) + '<br>' +
-            'Out: ' + (r.sign_out_time ? esc(fmtDT(r.sign_out_time)) + ' (' + esc(r.duration || '-') + ')' : '-') +
+        '<div class="pending-item">' +
+          '<div class="pi-top">' +
+            '<span>' + esc(r.hospital_name || 'Hospital') + '</span>' +
+            '<span>' + esc(r.sign_in_date) + '</span>' +
           '</div>' +
+          '<div class="pi-sub">' +
+            'Signed in: ' + esc(fmtDT(r.sign_in_time)) + '<br>' +
+            'Location: ' + esc(r.sign_in_location || '-') +
+          '</div>' +
+          '<button class="mini-btn warn" type="button" data-close-shift="' + esc(r.id) + '">Sign Out This Shift</button>' +
         '</div>'
       );
     }).join('');
@@ -772,20 +1017,18 @@
   async function handleSignIn() {
     hideToast();
     var profile = state.profiles.find(function (p) { return p.emp_id === state.selectedEmpId; });
-    if (!profile) return showToast('Please select your name first.', 'err');
+    if (!profile) { swipeInCtrl.reset(); return showToast('Please select your name first.', 'err'); }
 
     var hospital = $('hospitalInput').value.trim();
-    if (!hospital) return showToast('Please enter the Hospital Name.', 'err');
-    if (!state.gps.ready) return showToast('GPS location is required. Tap Refresh GPS.', 'err');
-    if (!state.inPhotoBlob) return showToast('Please take a Sign-In photo first.', 'err');
+    if (!hospital) { swipeInCtrl.reset(); return showToast('Hospital Name is mandatory.', 'err'); }
+    if (!state.gps.ready) { swipeInCtrl.reset(); return showToast('GPS location is required. Tap Refresh GPS.', 'err'); }
+    if (!state.inPhotoBlob) { swipeInCtrl.reset(); return showToast('Please take a Sign-In photo first.', 'err'); }
 
-    var btn = $('signInBtn');
-    btn.disabled = true;
-    btn.textContent = 'Uploading compressed photo...';
+    swipeInCtrl.setBusy('Uploading compressed photo...');
 
     try {
       var photoUrl = await uploadCompressedPhoto(state.inPhotoBlob, 'in', profile.emp_id);
-      btn.textContent = 'Saving Sign In...';
+      swipeInCtrl.setBusy('Saving Sign In...');
 
       var now = new Date();
       var record = {
@@ -805,78 +1048,87 @@
 
       var ins = await sb.from('attendance').insert(record);
       if (ins.error) {
-        if (ins.error.code === '23505') {
-          throw new Error('You already have an active shift today. Refreshing...');
-        }
+        if (ins.error.code === '23505') throw new Error('You already have an active shift today.');
         throw ins.error;
       }
 
       $('hospitalInput').value = '';
-      showToast('Signed in successfully! Photo saved & synced.', 'ok');
+      showToast('Signed in successfully!', 'ok');
       await selectPhysio(profile.emp_id);
     } catch (err) {
+      swipeInCtrl.reset();
       showToast(err.message || String(err), 'err');
-    } finally {
-      btn.disabled = false;
-      btn.textContent = 'Punch Sign In';
     }
   }
 
   /* ---------------- Submit Sign Out ---------------- */
   async function handleSignOut() {
     hideToast();
-    if (!state.activeShift) return showToast('No active shift found.', 'err');
-    if (!state.gps.ready) return showToast('GPS location is required. Tap Refresh GPS.', 'err');
-    if (!state.outPhotoBlob) return showToast('Please take a Sign-Out photo first.', 'err');
+    if (!state.activeShift) { swipeOutCtrl.reset(); return showToast('No active shift found.', 'err'); }
 
-    var btn = $('signOutBtn');
-    btn.disabled = true;
-    btn.textContent = 'Uploading compressed photo...';
+    var preName = $('preNameInput').value.trim();
+    var visited = $('visitedInput').value.trim();
+    var assessed = $('assessedInput').value.trim();
+    var converted = $('convertedInput').value.trim();
+    var remarks = $('remarksInput').value.trim();
+
+    if (!preName) { swipeOutCtrl.reset(); return showToast('PRE Name is mandatory for Sign Out.', 'err'); }
+    if (visited === '' || Number(visited) < 0) { swipeOutCtrl.reset(); return showToast('Patients Visited is mandatory for Sign Out.', 'err'); }
+    if (assessed === '' || Number(assessed) < 0) { swipeOutCtrl.reset(); return showToast('Assessments Done is mandatory for Sign Out.', 'err'); }
+    if (converted === '' || Number(converted) < 0) { swipeOutCtrl.reset(); return showToast('Converted count is mandatory for Sign Out.', 'err'); }
+    if (!remarks) { swipeOutCtrl.reset(); return showToast('Remarks are mandatory for Sign Out.', 'err'); }
+    if (!state.gps.ready) { swipeOutCtrl.reset(); return showToast('GPS location is required. Tap Refresh GPS.', 'err'); }
+    if (!state.outPhotoBlob) { swipeOutCtrl.reset(); return showToast('Please take a Sign-Out photo first.', 'err'); }
+
+    swipeOutCtrl.setBusy('Uploading compressed photo...');
 
     try {
       var photoUrl = await uploadCompressedPhoto(state.outPhotoBlob, 'out', state.activeShift.emp_id);
-      btn.textContent = 'Saving Sign Out...';
+      swipeOutCtrl.setBusy('Saving Sign Out...');
 
       var nowIso = new Date().toISOString();
-      var duration = formatDuration(state.activeShift.sign_in_time, nowIso);
+      var duration = formatDurationSaved(state.activeShift.sign_in_time, nowIso);
+
+      var patch = {
+        sign_out_time: nowIso,
+        sign_out_location: state.gps.address,
+        sign_out_lat: state.gps.lat,
+        sign_out_lng: state.gps.lng,
+        pre_name: preName,
+        patients_visited: visited,
+        assessments_done: assessed,
+        converted: converted,
+        remarks: remarks,
+        sign_out_photo: photoUrl,
+        duration: duration,
+        status: 'Completed'
+      };
 
       var upd = await sb
         .from('attendance')
-        .update({
-          sign_out_time: nowIso,
-          sign_out_location: state.gps.address,
-          sign_out_lat: state.gps.lat,
-          sign_out_lng: state.gps.lng,
-          pre_name: $('preNameInput').value.trim(),
-          patients_visited: $('visitedInput').value.trim(),
-          assessments_done: $('assessedInput').value.trim(),
-          converted: $('convertedInput').value.trim(),
-          remarks: $('remarksInput').value.trim(),
-          sign_out_photo: photoUrl,
-          duration: duration,
-          status: 'Completed'
-        })
+        .update(patch)
         .eq('id', state.activeShift.id)
         .is('sign_out_time', null);
 
       if (upd.error) throw upd.error;
+
+      var completedRecord = Object.assign({}, state.activeShift, patch);
 
       $('preNameInput').value = '';
       $('visitedInput').value = '';
       $('assessedInput').value = '';
       $('convertedInput').value = '';
       $('remarksInput').value = '';
+
       showToast('Signed out successfully! Shift duration: ' + duration, 'ok');
-      await selectPhysio(state.selectedEmpId);
+      await selectPhysio(state.selectedEmpId, { justCompleted: completedRecord });
     } catch (err) {
+      swipeOutCtrl.reset();
       showToast(err.message || String(err), 'err');
-    } finally {
-      btn.disabled = false;
-      btn.textContent = 'Punch Sign Out';
     }
   }
 
-  /* ---------------- Photo Inputs ---------------- */
+  /* ---------------- Photo Compression Picker ---------------- */
   async function handlePhotoPick(file, kind) {
     if (!file) return;
     var preview = $(kind === 'in' ? 'inPhotoPreview' : 'outPhotoPreview');
@@ -900,9 +1152,6 @@
   }
 
   /* ---------------- Event Listeners ---------------- */
-  $('profileSearch').addEventListener('input', function (e) {
-    renderProfileOptions(e.target.value);
-  });
   $('profileSelect').addEventListener('change', function (e) {
     hideToast();
     selectPhysio(e.target.value);
@@ -910,17 +1159,37 @@
   $('refreshBtn').addEventListener('click', loadBootstrap);
   $('inGpsBtn').addEventListener('click', captureGps);
   $('outGpsBtn').addEventListener('click', captureGps);
-  $('inPhotoInput').addEventListener('change', function (e) {
-    handlePhotoPick(e.target.files[0], 'in');
+  $('inPhotoInput').addEventListener('change', function (e) { handlePhotoPick(e.target.files[0], 'in'); });
+  $('outPhotoInput').addEventListener('change', function (e) { handlePhotoPick(e.target.files[0], 'out'); });
+
+  $('newSignInBtn').addEventListener('click', function () {
+    hideToast();
+    state.forceShowSignIn = true;
+    swipeInCtrl.reset();
+    renderView();
   });
-  $('outPhotoInput').addEventListener('change', function (e) {
-    handlePhotoPick(e.target.files[0], 'out');
+
+  $('unclosedList').addEventListener('click', function (e) {
+    var btn = e.target.closest && e.target.closest('[data-close-shift]');
+    if (!btn) return;
+    var id = btn.getAttribute('data-close-shift');
+    var target = state.unclosedShifts.find(function (r) { return r.id === id; });
+    if (!target) return;
+    hideToast();
+    state.activeShift = target;
+    state.isOverdueSelected = true;
+    swipeOutCtrl.reset();
+    renderView();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   });
-  $('signInBtn').addEventListener('click', handleSignIn);
-  $('signOutBtn').addEventListener('click', handleSignOut);
+
+  $('cancelOverdueBtn').addEventListener('click', function () {
+    hideToast();
+    selectPhysio(state.selectedEmpId);
+  });
 
   updateClock();
-  setInterval(updateClock, 30000);
+  setInterval(updateClock, 1000);
   loadBootstrap();
 })();
 </script>
