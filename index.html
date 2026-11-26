@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-<title>PhysioTrack - Attendance Punch</title>
+<title>Physio Leads - Attendance </title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet" />
@@ -235,6 +235,12 @@
     font-weight: 700;
     cursor: pointer;
   }
+  .photo-btn:hover { background: #D7EEF5; border-color: var(--blue); }
+  .photo-hint {
+    margin-top: 6px;
+    font-size: 11px;
+    color: var(--muted);
+  }
   .photo-preview {
     margin-top: 12px;
     border-radius: 10px;
@@ -250,6 +256,97 @@
     padding: 6px 10px;
     border-top: 1px solid var(--border);
   }
+
+  /* ---------------- Live Camera Modal ---------------- */
+  .cam-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(10, 20, 26, 0.86);
+    backdrop-filter: blur(4px);
+    z-index: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 14px;
+  }
+  .cam-dialog {
+    width: 100%;
+    max-width: 460px;
+    background: #fff;
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+  }
+  .cam-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .cam-head h3 { font-size: 15px; font-weight: 800; color: var(--blue-dark); }
+  .cam-close {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    background: #fff;
+    color: var(--ink);
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .cam-stage {
+    position: relative;
+    background: #0D171C;
+    aspect-ratio: 4 / 3;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+  .cam-stage video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .cam-stage video.mirrored { transform: scaleX(-1); }
+  .cam-status {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 20px;
+    color: #fff;
+    font-size: 13px;
+    font-weight: 600;
+    background: rgba(13, 23, 28, 0.8);
+  }
+  .cam-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 14px 16px;
+    background: #fff;
+  }
+  .cam-capture-btn {
+    flex: 1;
+    border: none;
+    border-radius: 12px;
+    padding: 12px 16px;
+    font-size: 14px;
+    font-weight: 800;
+    color: #fff;
+    background: var(--blue);
+  }
+  .cam-capture-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+  .cam-capture-btn:hover:not(:disabled) { background: var(--blue-dark); }
 
   /* ---------------- Swipe to Confirm Slider ---------------- */
   .swipe-track {
@@ -361,9 +458,7 @@
   .primary-btn:hover { background: var(--blue-dark); }
 
   /* ---------------- Unclosed Previous-Day Shifts ---------------- */
-  .unclosed-card {
-    border-left: 4px solid var(--orange);
-  }
+  .unclosed-card { border-left: 4px solid var(--orange); }
   .pending-item {
     border: 1px solid #F4C3A3;
     border-left: 4px solid var(--orange);
@@ -428,7 +523,7 @@
 <main class="wrap">
   <div class="toast hidden" id="toast"></div>
 
-  <!-- Physio Selector (no search filter) -->
+  <!-- Physio Selector -->
   <section class="card">
     <div class="card-title">
       <span>Select Physio</span>
@@ -482,10 +577,10 @@
     </div>
 
     <div class="field">
-      <label class="label">Sign-In Selfie / Photo <span class="req">*</span> (Auto-Compressed)</label>
+      <label class="label">Sign-In Selfie / Photo <span class="req">*</span> (Live Camera Only)</label>
       <div class="photo-box">
-        <label class="photo-btn" for="inPhotoInput">Take / Upload Photo</label>
-        <input class="hidden" id="inPhotoInput" type="file" accept="image/*" capture="user" />
+        <button class="photo-btn" id="inCamBtn" type="button">Open Camera</button>
+        <div class="photo-hint">Live webcam / camera capture required (file upload disabled)</div>
         <div class="photo-preview hidden" id="inPhotoPreview">
           <img id="inPhotoImg" src="" alt="Sign-in preview" />
           <div class="photo-meta" id="inPhotoMeta"></div>
@@ -546,10 +641,10 @@
     </div>
 
     <div class="field">
-      <label class="label">Sign-Out Selfie / Photo <span class="req">*</span> (Auto-Compressed)</label>
+      <label class="label">Sign-Out Selfie / Photo <span class="req">*</span> (Live Camera Only)</label>
       <div class="photo-box">
-        <label class="photo-btn" for="outPhotoInput">Take / Upload Photo</label>
-        <input class="hidden" id="outPhotoInput" type="file" accept="image/*" capture="user" />
+        <button class="photo-btn" id="outCamBtn" type="button">Open Camera</button>
+        <div class="photo-hint">Live webcam / camera capture required (file upload disabled)</div>
         <div class="photo-preview hidden" id="outPhotoPreview">
           <img id="outPhotoImg" src="" alt="Sign-out preview" />
           <div class="photo-meta" id="outPhotoMeta"></div>
@@ -566,12 +661,30 @@
     </div>
   </section>
 
-  <!-- ONLY Unclosed Active Shifts from Previous Days (when sign-out was missed) -->
+  <!-- ONLY Unclosed Active Shifts from Previous Days -->
   <section class="card unclosed-card hidden" id="unclosedCard">
     <div class="card-title">Pending Active Shifts (Sign-Out Not Punched)</div>
     <div id="unclosedList"></div>
   </section>
 </main>
+
+<!-- Live Camera Modal -->
+<div class="cam-modal hidden" id="camModal" role="dialog" aria-modal="true" aria-labelledby="camTitle">
+  <div class="cam-dialog">
+    <div class="cam-head">
+      <h3 id="camTitle">Live Camera Capture</h3>
+      <button class="cam-close" id="camCloseBtn" type="button" aria-label="Close camera">&times;</button>
+    </div>
+    <div class="cam-stage">
+      <video id="camVideo" autoplay playsinline muted></video>
+      <div class="cam-status" id="camStatus">Starting camera...</div>
+    </div>
+    <div class="cam-actions">
+      <button class="mini-btn" id="camFlipBtn" type="button">Flip Camera</button>
+      <button class="cam-capture-btn" id="camCaptureBtn" type="button" disabled>Capture Photo</button>
+    </div>
+  </div>
+</div>
 
 <div class="loading-overlay" id="loading">
   <div class="spinner"></div>
@@ -656,17 +769,22 @@
   var state = {
     profiles: [],
     selectedEmpId: localStorage.getItem('pt_emp_id') || '',
-    activeShift: null,        // Currently open shift shown in Sign Out form (today or selected overdue)
-    isOverdueSelected: false, // True when user clicked "Sign Out" on a previous day's unclosed shift
-    unclosedShifts: [],       // Open shifts from previous days (sign_out_time is null & date < today)
-    lastCompletedShift: null, // Shown in completed summary card until user clicks "Sign In"
+    activeShift: null,
+    isOverdueSelected: false,
+    unclosedShifts: [],
+    lastCompletedShift: null,
     forceShowSignIn: false,
     gps: { lat: 0, lng: 0, address: '', ready: false },
     inPhotoBlob: null,
-    outPhotoBlob: null
+    outPhotoBlob: null,
+    inPreviewUrl: '',
+    outPreviewUrl: '',
+    camKind: 'in',
+    camFacing: 'user',
+    camStream: null
   };
 
-  /* ---------------- Live Clock & Active Timer (updates every 1s) ---------------- */
+  /* ---------------- Live Clock & Active Timer ---------------- */
   function updateClock() {
     $('clockPill').textContent = new Date().toLocaleTimeString('en-IN', {
       timeZone: TZ, hour: '2-digit', minute: '2-digit', hour12: true
@@ -750,41 +868,149 @@
   var swipeInCtrl = createSwipeSlider('swipeSignIn', 'Swipe right to Sign In &rarr;', handleSignIn);
   var swipeOutCtrl = createSwipeSlider('swipeSignOut', 'Swipe right to Sign Out &rarr;', handleSignOut);
 
-  /* ---------------- Image Compression (Canvas -> JPEG ~50-120 KB) ---------------- */
-  function compressImage(file, maxSide, quality) {
-    maxSide = maxSide || 960;
-    quality = quality || 0.65;
-    return new Promise(function (resolve, reject) {
-      var reader = new FileReader();
-      reader.onerror = function () { reject(new Error('Could not read image file')); };
-      reader.onload = function (ev) {
-        var img = new Image();
-        img.onerror = function () { reject(new Error('Invalid image file')); };
-        img.onload = function () {
-          var w = img.naturalWidth || img.width;
-          var h = img.naturalHeight || img.height;
-          var scale = Math.min(1, maxSide / Math.max(w, h));
-          var cw = Math.max(1, Math.round(w * scale));
-          var ch = Math.max(1, Math.round(h * scale));
+  /* ---------------- Live Camera Capture (Webcam / Phone Camera Only) ---------------- */
+  function stopCameraStream() {
+    if (state.camStream) {
+      try {
+        state.camStream.getTracks().forEach(function (t) { t.stop(); });
+      } catch (_) {}
+      state.camStream = null;
+    }
+    var video = $('camVideo');
+    if (video) video.srcObject = null;
+  }
 
-          var canvas = document.createElement('canvas');
-          canvas.width = cw;
-          canvas.height = ch;
-          canvas.getContext('2d').drawImage(img, 0, 0, cw, ch);
+  function closeCameraModal() {
+    stopCameraStream();
+    $('camModal').classList.add('hidden');
+    $('camCaptureBtn').disabled = true;
+  }
 
-          canvas.toBlob(function (blob) {
-            if (!blob) return reject(new Error('Image compression failed'));
-            if (blob.size > 160 * 1024 && quality > 0.45) {
-              canvas.toBlob(function (smaller) { resolve(smaller || blob); }, 'image/jpeg', 0.48);
-            } else {
-              resolve(blob);
-            }
-          }, 'image/jpeg', quality);
-        };
-        img.src = ev.target.result;
+  async function startCameraStream() {
+    stopCameraStream();
+    var video = $('camVideo');
+    var status = $('camStatus');
+    var capBtn = $('camCaptureBtn');
+
+    capBtn.disabled = true;
+    status.textContent = 'Starting camera...';
+    status.classList.remove('hidden');
+
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      status.textContent = 'Live camera is unavailable in this browser or non-HTTPS page. File upload is disabled.';
+      return;
+    }
+
+    try {
+      var constraints = {
+        video: {
+          facingMode: { ideal: state.camFacing },
+          width: { ideal: 1280 },
+          height: { ideal: 720 }
+        },
+        audio: false
       };
-      reader.readAsDataURL(file);
+
+      var stream;
+      try {
+        stream = await navigator.mediaDevices.getUserMedia(constraints);
+      } catch (err) {
+        if (err && (err.name === 'OverconstrainedError' || err.name === 'NotFoundError')) {
+          stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+        } else {
+          throw err;
+        }
+      }
+
+      state.camStream = stream;
+      video.srcObject = stream;
+      video.classList.toggle('mirrored', state.camFacing === 'user');
+      await video.play();
+
+      status.classList.add('hidden');
+      capBtn.disabled = false;
+    } catch (err) {
+      var msg = (err && err.name === 'NotAllowedError')
+        ? 'Camera permission denied. Please allow camera access in browser settings to punch attendance.'
+        : 'Could not access camera (' + (err && err.message ? err.message : err) + ').';
+      status.textContent = msg;
+    }
+  }
+
+  function openCamera(kind) {
+    hideToast();
+    state.camKind = kind;
+    state.camFacing = 'user';
+    $('camTitle').textContent = kind === 'out' ? 'Sign-Out Live Camera' : 'Sign-In Live Camera';
+    $('camModal').classList.remove('hidden');
+    startCameraStream();
+  }
+
+  function canvasToCompressedJpeg(canvas, quality) {
+    return new Promise(function (resolve, reject) {
+      canvas.toBlob(function (blob) {
+        if (!blob) return reject(new Error('Camera capture failed'));
+        if (blob.size > 160 * 1024 && quality > 0.45) {
+          canvas.toBlob(function (smaller) { resolve(smaller || blob); }, 'image/jpeg', 0.48);
+        } else {
+          resolve(blob);
+        }
+      }, 'image/jpeg', quality);
     });
+  }
+
+  async function captureCameraFrame() {
+    var video = $('camVideo');
+    if (!state.camStream || !video.videoWidth || !video.videoHeight) {
+      return showToast('Camera is not ready yet. Please wait a second.', 'err');
+    }
+
+    $('camCaptureBtn').disabled = true;
+
+    try {
+      var vw = video.videoWidth;
+      var vh = video.videoHeight;
+      var scale = Math.min(1, 960 / Math.max(vw, vh));
+      var cw = Math.max(1, Math.round(vw * scale));
+      var ch = Math.max(1, Math.round(vh * scale));
+
+      var canvas = document.createElement('canvas');
+      canvas.width = cw;
+      canvas.height = ch;
+      var ctx = canvas.getContext('2d');
+      if (state.camFacing === 'user') {
+        ctx.translate(cw, 0);
+        ctx.scale(-1, 1);
+      }
+      ctx.drawImage(video, 0, 0, cw, ch);
+
+      var blob = await canvasToCompressedJpeg(canvas, 0.65);
+      var compKB = Math.round(blob.size / 1024);
+      var kind = state.camKind;
+
+      if (kind === 'in') {
+        if (state.inPreviewUrl) URL.revokeObjectURL(state.inPreviewUrl);
+        state.inPhotoBlob = blob;
+        state.inPreviewUrl = URL.createObjectURL(blob);
+        $('inPhotoImg').src = state.inPreviewUrl;
+        $('inPhotoMeta').textContent = 'Live camera photo captured (' + compKB + ' KB)';
+        $('inPhotoPreview').classList.remove('hidden');
+        $('inCamBtn').textContent = 'Retake Photo';
+      } else {
+        if (state.outPreviewUrl) URL.revokeObjectURL(state.outPreviewUrl);
+        state.outPhotoBlob = blob;
+        state.outPreviewUrl = URL.createObjectURL(blob);
+        $('outPhotoImg').src = state.outPreviewUrl;
+        $('outPhotoMeta').textContent = 'Live camera photo captured (' + compKB + ' KB)';
+        $('outPhotoPreview').classList.remove('hidden');
+        $('outCamBtn').textContent = 'Retake Photo';
+      }
+
+      closeCameraModal();
+    } catch (err) {
+      $('camCaptureBtn').disabled = false;
+      showToast('Camera error: ' + (err.message || err), 'err');
+    }
   }
 
   async function uploadCompressedPhoto(blob, kind, empId) {
@@ -873,16 +1099,19 @@
 
   async function selectPhysio(empId, opts) {
     opts = opts || {};
+    closeCameraModal();
     state.selectedEmpId = empId;
     if (empId) localStorage.setItem('pt_emp_id', empId);
     else localStorage.removeItem('pt_emp_id');
 
     state.inPhotoBlob = null;
     state.outPhotoBlob = null;
+    if (state.inPreviewUrl) { URL.revokeObjectURL(state.inPreviewUrl); state.inPreviewUrl = ''; }
+    if (state.outPreviewUrl) { URL.revokeObjectURL(state.outPreviewUrl); state.outPreviewUrl = ''; }
     $('inPhotoPreview').classList.add('hidden');
     $('outPhotoPreview').classList.add('hidden');
-    $('inPhotoInput').value = '';
-    $('outPhotoInput').value = '';
+    $('inCamBtn').textContent = 'Open Camera';
+    $('outCamBtn').textContent = 'Open Camera';
     swipeInCtrl.reset();
     swipeOutCtrl.reset();
 
@@ -1022,7 +1251,7 @@
     var hospital = $('hospitalInput').value.trim();
     if (!hospital) { swipeInCtrl.reset(); return showToast('Hospital Name is mandatory.', 'err'); }
     if (!state.gps.ready) { swipeInCtrl.reset(); return showToast('GPS location is required. Tap Refresh GPS.', 'err'); }
-    if (!state.inPhotoBlob) { swipeInCtrl.reset(); return showToast('Please take a Sign-In photo first.', 'err'); }
+    if (!state.inPhotoBlob) { swipeInCtrl.reset(); return showToast('Please capture a live Sign-In photo first.', 'err'); }
 
     swipeInCtrl.setBusy('Uploading compressed photo...');
 
@@ -1078,7 +1307,7 @@
     if (converted === '' || Number(converted) < 0) { swipeOutCtrl.reset(); return showToast('Converted count is mandatory for Sign Out.', 'err'); }
     if (!remarks) { swipeOutCtrl.reset(); return showToast('Remarks are mandatory for Sign Out.', 'err'); }
     if (!state.gps.ready) { swipeOutCtrl.reset(); return showToast('GPS location is required. Tap Refresh GPS.', 'err'); }
-    if (!state.outPhotoBlob) { swipeOutCtrl.reset(); return showToast('Please take a Sign-Out photo first.', 'err'); }
+    if (!state.outPhotoBlob) { swipeOutCtrl.reset(); return showToast('Please capture a live Sign-Out photo first.', 'err'); }
 
     swipeOutCtrl.setBusy('Uploading compressed photo...');
 
@@ -1128,29 +1357,6 @@
     }
   }
 
-  /* ---------------- Photo Compression Picker ---------------- */
-  async function handlePhotoPick(file, kind) {
-    if (!file) return;
-    var preview = $(kind === 'in' ? 'inPhotoPreview' : 'outPhotoPreview');
-    var img = $(kind === 'in' ? 'inPhotoImg' : 'outPhotoImg');
-    var meta = $(kind === 'in' ? 'inPhotoMeta' : 'outPhotoMeta');
-
-    try {
-      var origKB = Math.round(file.size / 1024);
-      var blob = await compressImage(file, 960, 0.65);
-      var compKB = Math.round(blob.size / 1024);
-
-      if (kind === 'in') state.inPhotoBlob = blob;
-      else state.outPhotoBlob = blob;
-
-      img.src = URL.createObjectURL(blob);
-      meta.textContent = 'Compressed: ' + compKB + ' KB (was ' + origKB + ' KB)';
-      preview.classList.remove('hidden');
-    } catch (err) {
-      showToast('Photo error: ' + err.message, 'err');
-    }
-  }
-
   /* ---------------- Event Listeners ---------------- */
   $('profileSelect').addEventListener('change', function (e) {
     hideToast();
@@ -1159,8 +1365,17 @@
   $('refreshBtn').addEventListener('click', loadBootstrap);
   $('inGpsBtn').addEventListener('click', captureGps);
   $('outGpsBtn').addEventListener('click', captureGps);
-  $('inPhotoInput').addEventListener('change', function (e) { handlePhotoPick(e.target.files[0], 'in'); });
-  $('outPhotoInput').addEventListener('change', function (e) { handlePhotoPick(e.target.files[0], 'out'); });
+
+  $('inCamBtn').addEventListener('click', function () { openCamera('in'); });
+  $('outCamBtn').addEventListener('click', function () { openCamera('out'); });
+  $('camCloseBtn').addEventListener('click', closeCameraModal);
+  $('camCaptureBtn').addEventListener('click', captureCameraFrame);
+  $('camFlipBtn').addEventListener('click', function () {
+    state.camFacing = state.camFacing === 'user' ? 'environment' : 'user';
+    startCameraStream();
+  });
+
+  window.addEventListener('pagehide', stopCameraStream);
 
   $('newSignInBtn').addEventListener('click', function () {
     hideToast();
@@ -1176,6 +1391,7 @@
     var target = state.unclosedShifts.find(function (r) { return r.id === id; });
     if (!target) return;
     hideToast();
+    closeCameraModal();
     state.activeShift = target;
     state.isOverdueSelected = true;
     swipeOutCtrl.reset();
