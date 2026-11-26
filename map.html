@@ -27,7 +27,7 @@
     --border: #DCE6EB;
     --shadow-sm: 0 2px 8px rgba(18, 35, 43, 0.06);
     --shadow-md: 0 10px 28px rgba(0, 71, 90, 0.14);
-    --radius: 14px;
+    --radius: 13px;
   }
 
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -45,6 +45,7 @@
   button { cursor: pointer; }
   .hidden { display: none !important; }
 
+  /* ---------------- Top Bar ---------------- */
   .topbar {
     height: 60px;
     flex-shrink: 0;
@@ -156,6 +157,7 @@
   .refresh-btn.spinning svg { animation: spin 0.8s linear infinite; }
   @keyframes spin { to { transform: rotate(360deg); } }
 
+  /* Calendar Popover */
   .cal {
     position: absolute;
     right: 0;
@@ -219,6 +221,7 @@
   }
   .cal-today-btn:hover { background: var(--blue); color: #fff; }
 
+  /* ---------------- Main Layout ---------------- */
   .main { flex: 1; display: flex; min-height: 0; position: relative; }
   .map-wrap { flex: 1; min-width: 0; position: relative; display: flex; }
   #map { flex: 1; width: 100%; height: 100%; z-index: 1; }
@@ -245,8 +248,9 @@
   .leg-item { display: inline-flex; align-items: center; gap: 6px; }
   .leg-dot { width: 10px; height: 10px; border-radius: 50%; border: 2px solid #fff; box-shadow: 0 0 0 1px rgba(0,0,0,.15); }
 
+  /* ---------------- Right Panel ---------------- */
   .panel {
-    width: 410px;
+    width: 420px;
     max-width: 100%;
     background: #fff;
     border-left: 1px solid var(--border);
@@ -259,14 +263,14 @@
     display: flex;
     align-items: center;
     gap: 10px;
-    padding: 12px 16px;
+    padding: 10px 14px;
     border-bottom: 1px solid var(--border);
-    min-height: 58px;
+    min-height: 54px;
     background: #fff;
   }
   .back-btn {
-    height: 34px;
-    padding: 0 12px;
+    height: 32px;
+    padding: 0 11px;
     border: 1px solid var(--blue-line);
     background: var(--blue-soft);
     color: var(--blue-dark);
@@ -280,23 +284,23 @@
   }
   .back-btn:hover { background: var(--blue); color: #fff; border-color: var(--blue); }
   .panel-titles { min-width: 0; flex: 1; }
-  .panel-head h2 { font-size: 16px; font-weight: 800; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .panel-head h2 { font-size: 15px; font-weight: 800; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .panel-sub { font-size: 12px; color: var(--muted); margin-top: 1px; }
 
   .panel-tools {
-    padding: 10px 14px;
+    padding: 9px 12px;
     border-bottom: 1px solid var(--border);
     background: #FAFCFD;
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 7px;
   }
   .search-box { position: relative; display: flex; align-items: center; }
   .search-box svg { position: absolute; left: 10px; color: var(--muted); pointer-events: none; }
   .search-input {
     width: 100%;
-    height: 36px;
-    padding: 0 30px 0 32px;
+    height: 35px;
+    padding: 0 28px 0 32px;
     border: 1px solid var(--border);
     border-radius: 10px;
     background: #fff;
@@ -312,16 +316,16 @@
     background: #fff;
     color: var(--muted);
     border-radius: 999px;
-    padding: 4px 10px;
+    padding: 4px 11px;
     font-size: 11px;
     font-weight: 700;
     white-space: nowrap;
   }
   .fchip.active { background: var(--blue-dark); color: #fff; border-color: var(--blue-dark); }
 
-  .panel-body { flex: 1; overflow-y: auto; padding: 12px 14px 28px; background: var(--bg); }
+  .panel-body { flex: 1; overflow-y: auto; padding: 10px 12px 24px; background: var(--bg); }
   .empty {
-    padding: 36px 16px;
+    padding: 32px 16px;
     text-align: center;
     color: var(--muted);
     font-size: 13px;
@@ -331,6 +335,7 @@
     border-radius: var(--radius);
   }
 
+  /* ---------------- Compact Cards ---------------- */
   .pcard, .scard {
     display: block;
     width: 100%;
@@ -338,11 +343,12 @@
     background: #fff;
     border: 1px solid var(--border);
     border-radius: var(--radius);
-    padding: 13px 14px;
-    margin-bottom: 10px;
+    padding: 10px 12px;
+    margin-bottom: 8px;
     border-left: 4px solid var(--blue-line);
     box-shadow: var(--shadow-sm);
     transition: transform 0.12s ease, border-color 0.15s ease, background 0.15s ease;
+    cursor: pointer;
   }
   .pcard:hover, .scard:hover { background: #F9FDFF; border-color: var(--blue); transform: translateY(-1px); }
   .pcard.st-Active, .scard.st-Active { border-left-color: var(--green); }
@@ -350,60 +356,175 @@
   .pcard.st-Missing, .scard.st-Missing { border-left-color: var(--orange); }
 
   .row { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
-  .pname { font-weight: 700; font-size: 14px; color: var(--ink); line-height: 1.3; }
-  .punit { font-size: 12px; color: var(--muted); margin-top: 2px; }
-  .meta-grid { display: grid; grid-template-columns: auto 1fr; gap: 4px 10px; margin-top: 9px; font-size: 12px; line-height: 1.4; }
-  .meta-k { color: var(--muted); font-weight: 600; }
-  .meta-v { color: #243A43; font-weight: 500; overflow: hidden; text-overflow: ellipsis; }
+  .pname { font-weight: 700; font-size: 13.5px; color: var(--ink); line-height: 1.3; word-break: break-word; }
+  .punit { font-size: 11.5px; color: var(--muted); margin-top: 1px; }
 
-  .chip { font-size: 11px; font-weight: 700; padding: 3px 9px; border-radius: 999px; white-space: nowrap; flex-shrink: 0; }
+  .meta-grid {
+    display: grid;
+    grid-template-columns: 74px 1fr;
+    gap: 3px 8px;
+    margin-top: 7px;
+    font-size: 11.5px;
+    line-height: 1.38;
+  }
+  .meta-k { color: var(--muted); font-weight: 600; }
+  .meta-v {
+    color: #243A43;
+    font-weight: 500;
+    white-space: normal;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+  }
+
+  .chip { font-size: 10.5px; font-weight: 700; padding: 2px 8px; border-radius: 999px; white-space: nowrap; flex-shrink: 0; }
   .chip.Active { background: var(--green-soft); color: #136F44; }
   .chip.Completed { background: var(--blue-soft); color: var(--blue-dark); }
   .chip.Missing { background: var(--orange-soft); color: #A8480E; }
-
-  .badge {
-    background: var(--yellow);
-    color: var(--yellow-ink);
-    font-size: 11px;
-    font-weight: 800;
-    border-radius: 999px;
-    padding: 3px 9px;
-    white-space: nowrap;
-    flex-shrink: 0;
-  }
   .dur { font-weight: 800; color: var(--blue-dark); }
 
-  .summary { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 12px; }
-  .sum-box { background: #fff; border: 1px solid var(--blue-line); border-radius: var(--radius); padding: 10px 12px; text-align: center; box-shadow: var(--shadow-sm); }
-  .sum-lbl { font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; }
-  .sum-val { font-weight: 800; font-size: 15px; color: var(--blue-dark); margin-top: 3px; }
-
-  .sec { background: #fff; border: 1px solid var(--border); border-radius: var(--radius); padding: 14px; margin-bottom: 12px; box-shadow: var(--shadow-sm); }
-  .sec h3 { font-size: 14px; font-weight: 800; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; color: var(--ink); }
-  .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; flex-shrink: 0; }
-  .kv { display: grid; grid-template-columns: 116px 1fr; gap: 7px 10px; font-size: 13px; }
-  .kv-k { color: var(--muted); font-weight: 500; }
-  .kv-v { font-weight: 600; color: var(--ink); word-break: break-word; }
-
-  .photo-wrap { margin-top: 12px; border-radius: 11px; overflow: hidden; border: 1px solid var(--border); background: var(--blue-soft); position: relative; }
-  .photo-wrap img { width: 100%; max-height: 240px; object-fit: cover; display: block; cursor: zoom-in; }
-  .photo-bar {
+  /* Compact Shift Card Photos Row */
+  .sc-photos {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid #EDF3F6;
+  }
+  .sc-thumb-box {
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    padding: 6px 10px;
-    background: #fff;
-    border-top: 1px solid var(--border);
+    gap: 8px;
+    background: #F6FAFC;
+    border: 1px solid var(--border);
+    border-radius: 9px;
+    padding: 5px;
+    min-width: 0;
+  }
+  .sc-thumb-img {
+    width: 44px;
+    height: 44px;
+    border-radius: 7px;
+    object-fit: cover;
+    flex-shrink: 0;
+    cursor: zoom-in;
+    border: 1px solid var(--border);
+    background: var(--blue-soft);
+  }
+  .sc-thumb-empty {
+    width: 44px;
+    height: 44px;
+    border-radius: 7px;
+    flex-shrink: 0;
+    background: #EDF3F6;
+    color: var(--muted);
+    font-size: 10px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+  .sc-thumb-info { min-width: 0; flex: 1; }
+  .sc-thumb-lbl { font-size: 10.5px; font-weight: 800; color: var(--ink); display: block; }
+  .sc-thumb-lbl.in-lbl { color: #136F44; }
+  .sc-thumb-lbl.out-lbl { color: #B84F0F; }
+  .zoom-link {
+    display: inline-block;
+    margin-top: 2px;
+    border: none;
+    background: none;
+    padding: 0;
     font-size: 11px;
     font-weight: 700;
-    color: var(--blue-dark);
+    color: var(--blue);
+    text-decoration: underline;
+    cursor: pointer;
   }
-  .photo-bar a { color: var(--blue); text-decoration: none; }
-  .nophoto { margin-top: 10px; font-size: 12px; color: var(--muted); background: #F3F7F9; border: 1px dashed var(--border); border-radius: 10px; padding: 10px; text-align: center; }
+  .zoom-link:hover { color: var(--blue-dark); }
+
+  /* ---------------- Compact Shift Detail View ---------------- */
+  .summary { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 10px; }
+  .sum-box { background: #fff; border: 1px solid var(--blue-line); border-radius: var(--radius); padding: 8px 10px; text-align: center; box-shadow: var(--shadow-sm); }
+  .sum-lbl { font-size: 10.5px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; }
+  .sum-val { font-weight: 800; font-size: 14px; color: var(--blue-dark); margin-top: 2px; }
+
+  .sec { background: #fff; border: 1px solid var(--border); border-radius: var(--radius); padding: 11px 12px; margin-bottom: 10px; box-shadow: var(--shadow-sm); }
+  .sec h3 { font-size: 13.5px; font-weight: 800; margin-bottom: 8px; display: flex; align-items: center; gap: 7px; color: var(--ink); }
+  .dot { width: 9px; height: 9px; border-radius: 50%; display: inline-block; flex-shrink: 0; }
+  .kv { display: grid; grid-template-columns: 104px 1fr; gap: 5px 8px; font-size: 12px; line-height: 1.4; }
+  .kv-k { color: var(--muted); font-weight: 600; }
+  .kv-v { font-weight: 600; color: var(--ink); white-space: normal; word-break: break-word; overflow-wrap: anywhere; }
+
+  /* Compact detail photo bar */
+  .detail-photo-row {
+    margin-top: 9px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #F6FAFC;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 7px;
+  }
+  .detail-photo-row img {
+    width: 68px;
+    height: 68px;
+    border-radius: 8px;
+    object-fit: cover;
+    cursor: zoom-in;
+    flex-shrink: 0;
+    border: 1px solid var(--border);
+  }
+  .detail-photo-meta { flex: 1; min-width: 0; }
+  .detail-photo-title { font-size: 12px; font-weight: 700; color: var(--ink); margin-bottom: 5px; }
+  .detail-photo-actions { display: flex; gap: 6px; flex-wrap: wrap; }
+  .mini-pill-btn {
+    border: 1px solid var(--blue-line);
+    background: var(--blue-soft);
+    color: var(--blue-dark);
+    border-radius: 7px;
+    padding: 4px 9px;
+    font-size: 11px;
+    font-weight: 700;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .mini-pill-btn:hover { background: var(--blue); color: #fff; border-color: var(--blue); }
+  .nophoto { margin-top: 8px; font-size: 11.5px; color: var(--muted); background: #F3F7F9; border: 1px dashed var(--border); border-radius: 9px; padding: 8px; text-align: center; }
+
+  /* ---------------- Map Photo Bubbles + IN/OUT Tag ---------------- */
+  .bub-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 52px;
+    pointer-events: auto;
+  }
+  .bub-tag {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 9px;
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: 0.04em;
+    padding: 2px 6px;
+    border-radius: 999px;
+    color: #fff;
+    background: var(--green);
+    border: 1.5px solid #fff;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.28);
+    margin-bottom: 2px;
+    white-space: nowrap;
+  }
+  .bub-tag.in, .bub-tag.Active { background: var(--green); }
+  .bub-tag.Completed { background: var(--blue); }
+  .bub-tag.out, .bub-tag.Missing { background: var(--orange); }
 
   .bub {
-    width: 38px;
-    height: 38px;
+    width: 44px;
+    height: 44px;
     border-radius: 50%;
     border: 3px solid #fff;
     color: #fff;
@@ -413,26 +534,60 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 3px 10px rgba(0, 38, 47, 0.38);
+    overflow: hidden;
+    box-shadow: 0 3px 10px rgba(0, 38, 47, 0.42);
     transition: transform 0.15s ease;
+    position: relative;
   }
   .bub:hover { transform: scale(1.12); }
-  .bub.Active { background: var(--green); }
-  .bub.Completed { background: var(--blue); }
-  .bub.Missing { background: var(--orange); }
-  .bub.in { background: var(--green); }
-  .bub.out { background: var(--orange); }
+  .bub.Active, .bub.in { background: var(--green); border-color: var(--green); box-shadow: 0 0 0 2px #fff, 0 4px 10px rgba(0, 38, 47, 0.35); }
+  .bub.Completed { background: var(--blue); border-color: var(--blue); box-shadow: 0 0 0 2px #fff, 0 4px 10px rgba(0, 38, 47, 0.35); }
+  .bub.Missing, .bub.out { background: var(--orange); border-color: var(--orange); box-shadow: 0 0 0 2px #fff, 0 4px 10px rgba(0, 38, 47, 0.35); }
+  .bub img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    border-radius: 50%;
+  }
 
+  /* ---------------- Map Popups ---------------- */
   .leaflet-popup-content-wrapper { border-radius: 14px; box-shadow: var(--shadow-md); }
-  .leaflet-popup-content { font-family: 'DM Sans', sans-serif; font-size: 13px; line-height: 1.45; margin: 13px 15px; min-width: 210px; }
-  .pop-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 4px; }
+  .leaflet-popup-content { font-family: 'DM Sans', sans-serif; font-size: 12.5px; line-height: 1.4; margin: 12px 14px; min-width: 245px; max-width: 290px; }
+  .pop-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 3px; }
   .pop-name { font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 800; font-size: 14px; color: var(--ink); }
-  .pop-hosp { font-size: 12px; font-weight: 600; color: var(--blue-dark); margin-bottom: 8px; }
-  .pop-row { font-size: 12px; color: #2B424C; margin-top: 3px; }
+  .pop-hosp { font-size: 12.5px; font-weight: 700; color: var(--blue-dark); margin-bottom: 6px; word-break: break-word; }
+  .pop-row { font-size: 11.5px; color: #2B424C; margin-top: 2px; word-break: break-word; }
   .pop-row b { color: var(--muted); }
-  .pop-btn { margin-top: 10px; width: 100%; border: none; background: var(--blue); color: #fff; border-radius: 9px; padding: 8px 12px; font-size: 12px; font-weight: 700; }
+  .pop-metrics {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 5px;
+    margin: 7px 0 6px;
+  }
+  .pop-metric {
+    background: var(--blue-soft);
+    border: 1px solid var(--blue-line);
+    border-radius: 8px;
+    padding: 4px 5px;
+    text-align: center;
+  }
+  .pop-metric-k { display: block; font-size: 9.5px; font-weight: 700; color: var(--muted); text-transform: uppercase; }
+  .pop-metric-v { display: block; font-size: 13px; font-weight: 800; color: var(--blue-dark); }
+  .pop-remarks {
+    background: #F6FAFC;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 5px 7px;
+    font-size: 11.5px;
+    color: var(--ink);
+    margin-top: 5px;
+    word-break: break-word;
+  }
+  .pop-btn { margin-top: 9px; width: 100%; border: none; background: var(--blue); color: #fff; border-radius: 9px; padding: 7px 12px; font-size: 12px; font-weight: 700; }
   .pop-btn:hover { background: var(--blue-dark); }
 
+  /* ---------------- Loading & Lightbox ---------------- */
   .loading {
     position: absolute;
     inset: 60px 0 0 0;
@@ -454,14 +609,17 @@
   .lightbox {
     position: fixed;
     inset: 0;
-    background: rgba(10, 20, 26, 0.88);
+    background: rgba(10, 20, 26, 0.9);
     z-index: 3000;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
+    gap: 12px;
     padding: 20px;
   }
-  .lightbox img { max-width: 95vw; max-height: 88vh; border-radius: 12px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
+  .lightbox img { max-width: 95vw; max-height: 82vh; border-radius: 12px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
+  .lightbox-cap { color: #fff; font-size: 13px; font-weight: 700; }
   .lightbox-close {
     position: absolute;
     top: 16px;
@@ -470,7 +628,7 @@
     height: 40px;
     border-radius: 50%;
     border: none;
-    background: rgba(255,255,255,0.18);
+    background: rgba(255,255,255,0.2);
     color: #fff;
     font-size: 22px;
     display: flex;
@@ -491,7 +649,9 @@
 <body>
 
 <header class="topbar">
-  <div class="logo" id="logo"><img src="/logo.png" alt="Logo" onerror="this.parentNode.textContent='PT'" /></div>
+  <div class="logo" id="logo">
+    <img src="/logo.png" alt="Logo" onerror="this.parentNode.textContent='PT'" />
+  </div>
   <div class="brand">
     <div class="brand-title">Field Operations Map</div>
     <div class="brand-sub"><span class="live-dot"></span><span id="syncText">Connecting...</span></div>
@@ -517,9 +677,9 @@
   <div class="map-wrap">
     <div id="map"></div>
     <div class="map-legend" id="mapLegend">
-      <span class="leg-item"><span class="leg-dot" style="background:var(--green)"></span>Active</span>
+      <span class="leg-item"><span class="leg-dot" style="background:var(--green)"></span>Active / IN</span>
       <span class="leg-item"><span class="leg-dot" style="background:var(--blue)"></span>Completed</span>
-      <span class="leg-item"><span class="leg-dot" style="background:var(--orange)"></span>Signout missing</span>
+      <span class="leg-item"><span class="leg-dot" style="background:var(--orange)"></span>OUT / Missing</span>
     </div>
   </div>
 
@@ -539,7 +699,6 @@
       </div>
       <div class="filter-row" id="statusFilterRow">
         <button class="fchip active" data-filter="all" type="button">All</button>
-        <button class="fchip" data-filter="inrange" type="button">Punched in range</button>
         <button class="fchip" data-filter="Active" type="button">Active</button>
         <button class="fchip" data-filter="Completed" type="button">Completed</button>
         <button class="fchip" data-filter="Missing" type="button">Missing</button>
@@ -558,6 +717,7 @@
 <div class="lightbox hidden" id="lightbox">
   <button class="lightbox-close" id="lightboxClose" type="button" aria-label="Close photo">&times;</button>
   <img id="lightboxImg" src="" alt="Attendance photo" referrerpolicy="no-referrer" />
+  <div class="lightbox-cap" id="lightboxCap"></div>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
@@ -657,7 +817,6 @@
   var S = {
     profiles: [],
     att: [],
-    logo: '',
     from: todayKey(),
     to: todayKey(),
     pending: false,
@@ -677,14 +836,24 @@
   }).addTo(map);
   var layer = L.layerGroup().addTo(map);
 
-  function bubble(cls, text, lat, lng) {
+  /* Photo bubble with small IN / OUT pill tag directly above */
+  function bubble(cls, fallbackText, lat, lng, photoUrl, topTag) {
+    var inner = photoUrl
+      ? '<img src="' + esc(photoUrl) + '" alt="' + esc(fallbackText) + '" referrerpolicy="no-referrer" ' +
+          'onerror="this.parentNode.textContent=\'' + esc(fallbackText) + '\'" />'
+      : esc(fallbackText);
+
+    var tagHtml = topTag
+      ? '<div class="bub-tag ' + esc(cls) + '">' + esc(topTag) + '</div>'
+      : '';
+
     return L.marker([lat, lng], {
       icon: L.divIcon({
         className: '',
-        html: '<div class="bub ' + cls + '">' + esc(text) + '</div>',
-        iconSize: [38, 38],
-        iconAnchor: [19, 19],
-        popupAnchor: [0, -20]
+        html: '<div class="bub-wrap">' + tagHtml + '<div class="bub ' + esc(cls) + '">' + inner + '</div></div>',
+        iconSize: [52, 62],
+        iconAnchor: [26, 40],
+        popupAnchor: [0, -38]
       })
     });
   }
@@ -699,22 +868,33 @@
     return [lat + Math.cos(angle) * offset, lng + Math.sin(angle) * offset];
   }
 
-  function popupHtml(r) {
+  function popupHtml(r, modeLabel) {
     var st = statusOf(r);
-    var outHtml = r.signOutTime
-      ? '<div class="pop-row"><b>Logout:</b> ' + esc(fmtDT(r.signOutTime)) + '</div>' +
-        '<div class="pop-row"><b>Out Loc:</b> ' + esc(r.signOutLocation || '-') + '</div>'
+    var outTimeRow = r.signOutTime
+      ? '<div class="pop-row"><b>Logout:</b> ' + esc(fmtDT(r.signOutTime)) + '</div>'
       : '<div class="pop-row"><b>Logout:</b> ' + esc(statusLabel(r)) + '</div>';
+
+    var headerTag = modeLabel ? ' (' + modeLabel + ')' : '';
+
     return (
       '<div class="pop-head">' +
-        '<span class="pop-name">' + esc(r.physioName) + '</span>' +
+        '<span class="pop-name">' + esc(r.physioName) + esc(headerTag) + '</span>' +
         '<span class="chip ' + st + '">' + esc(statusLabel(r)) + '</span>' +
       '</div>' +
       '<div class="pop-hosp">' + esc(r.hospitalName || 'Hospital not entered') + '</div>' +
       '<div class="pop-row"><b>Login:</b> ' + esc(fmtDT(r.signInTime)) + '</div>' +
-      outHtml +
+      outTimeRow +
       '<div class="pop-row"><b>Duration:</b> <span class="dur">' + esc(durOf(r)) + '</span></div>' +
-      '<button class="pop-btn" data-open="' + esc(r.id) + '" type="button">View details</button>'
+      '<div class="pop-row"><b>PRE Name:</b> ' + esc(r.preName || '-') + '</div>' +
+      '<div class="pop-metrics">' +
+        '<div class="pop-metric"><span class="pop-metric-k">Visited</span><span class="pop-metric-v">' + esc(r.patientsVisited || '-') + '</span></div>' +
+        '<div class="pop-metric"><span class="pop-metric-k">Assessed</span><span class="pop-metric-v">' + esc(r.assessmentsDone || '-') + '</span></div>' +
+        '<div class="pop-metric"><span class="pop-metric-k">Converted</span><span class="pop-metric-v">' + esc(r.converted || '-') + '</span></div>' +
+      '</div>' +
+      '<div class="pop-remarks"><b>Remarks:</b> ' + esc(r.remarks || '-') + '</div>' +
+      (S.view !== 'detail'
+        ? '<button class="pop-btn" data-open="' + esc(r.id) + '" type="button">View details</button>'
+        : '')
     );
   }
 
@@ -728,18 +908,18 @@
       if (r) {
         if (validPt(r.signInLat, r.signInLng)) {
           var pIn = [Number(r.signInLat), Number(r.signInLng)];
-          bubble('in', 'IN', pIn[0], pIn[1])
-            .bindPopup('<b>Sign in</b><br>' + esc(fmtDT(r.signInTime)) + '<br>' + esc(r.signInLocation || '-'))
+          bubble('in', initials(r.physioName), pIn[0], pIn[1], r.signInPhoto, 'IN')
+            .bindPopup(popupHtml(r, 'IN'))
             .addTo(layer);
           pts.push(pIn);
         }
         if (r.signOutTime && validPt(r.signOutLat, r.signOutLng)) {
           var pOut = [Number(r.signOutLat), Number(r.signOutLng)];
           if (pts.length && Math.abs(pts[0][0] - pOut[0]) < 0.00003 && Math.abs(pts[0][1] - pOut[1]) < 0.00003) {
-            pOut = [pOut[0] + 0.00015, pOut[1] + 0.00015];
+            pOut = [pOut[0] + 0.00018, pOut[1] + 0.00018];
           }
-          bubble('out', 'OUT', pOut[0], pOut[1])
-            .bindPopup('<b>Sign out</b><br>' + esc(fmtDT(r.signOutTime)) + '<br>' + esc(r.signOutLocation || '-'))
+          bubble('out', initials(r.physioName), pOut[0], pOut[1], r.signOutPhoto, 'OUT')
+            .bindPopup(popupHtml(r, 'OUT'))
             .addTo(layer);
           pts.push(pOut);
           if (pts.length === 2) {
@@ -750,12 +930,23 @@
     } else {
       var list = S.view === 'shifts' ? shiftsFor(S.empId) : S.att.filter(inRange);
       list.forEach(function (r) {
-        if (!validPt(r.signInLat, r.signInLng)) return;
-        var coord = spreadCoord(Number(r.signInLat), Number(r.signInLng), seen);
-        var m = bubble(statusOf(r), initials(r.physioName), coord[0], coord[1]);
-        m.bindPopup(popupHtml(r));
-        m.addTo(layer);
-        pts.push(coord);
+        var st = statusOf(r);
+        if (validPt(r.signInLat, r.signInLng)) {
+          var coordIn = spreadCoord(Number(r.signInLat), Number(r.signInLng), seen);
+          var tagIn = r.signOutTime ? 'IN' : (st === 'Missing' ? 'IN' : 'IN');
+          var clsIn = r.signOutTime ? 'in' : st;
+          bubble(clsIn, initials(r.physioName), coordIn[0], coordIn[1], r.signInPhoto, tagIn)
+            .bindPopup(popupHtml(r, 'IN'))
+            .addTo(layer);
+          pts.push(coordIn);
+        }
+        if (r.signOutTime && validPt(r.signOutLat, r.signOutLng)) {
+          var coordOut = spreadCoord(Number(r.signOutLat), Number(r.signOutLng), seen);
+          bubble('out', initials(r.physioName), coordOut[0], coordOut[1], r.signOutPhoto || r.signInPhoto, 'OUT')
+            .bindPopup(popupHtml(r, 'OUT'))
+            .addTo(layer);
+          pts.push(coordOut);
+        }
       });
     }
 
@@ -768,7 +959,7 @@
         if (bounds.getNorthEast().distanceTo(bounds.getSouthWest()) < 30) {
           map.setView(pts[0], 16);
         } else {
-          map.fitBounds(bounds, { padding: [50, 50], maxZoom: 16 });
+          map.fitBounds(bounds, { padding: [55, 55], maxZoom: 16 });
         }
         S.hasFittedOnce = true;
       }
@@ -806,6 +997,46 @@
       '<span class="stat-pill missing"><span class="stat-dot" style="background:var(--orange)"></span>' + miss + ' Missing</span>';
   }
 
+  function compactThumbHtml(url, label, clsName) {
+    if (!url) {
+      return (
+        '<div class="sc-thumb-box">' +
+          '<div class="sc-thumb-empty">No pic</div>' +
+          '<div class="sc-thumb-info"><span class="sc-thumb-lbl ' + clsName + '">' + esc(label) + '</span><span style="font-size:10.5px;color:var(--muted)">Not available</span></div>' +
+        '</div>'
+      );
+    }
+    return (
+      '<div class="sc-thumb-box">' +
+        '<img class="sc-thumb-img" src="' + esc(url) + '" alt="' + esc(label) + '" referrerpolicy="no-referrer" loading="lazy" ' +
+          'data-zoom="' + esc(url) + '" data-cap="' + esc(label) + '" />' +
+        '<div class="sc-thumb-info">' +
+          '<span class="sc-thumb-lbl ' + clsName + '">' + esc(label) + '</span>' +
+          '<button class="zoom-link" type="button" data-zoom="' + esc(url) + '" data-cap="' + esc(label) + '">Full view</button>' +
+        '</div>' +
+      '</div>'
+    );
+  }
+
+  function detailPhotoHtml(url, label) {
+    if (!url) {
+      return '<div class="nophoto">Photo not available.</div>';
+    }
+    return (
+      '<div class="detail-photo-row">' +
+        '<img src="' + esc(url) + '" alt="' + esc(label) + '" referrerpolicy="no-referrer" loading="lazy" ' +
+          'data-zoom="' + esc(url) + '" data-cap="' + esc(label) + '" />' +
+        '<div class="detail-photo-meta">' +
+          '<div class="detail-photo-title">' + esc(label) + '</div>' +
+          '<div class="detail-photo-actions">' +
+            '<button class="mini-pill-btn" type="button" data-zoom="' + esc(url) + '" data-cap="' + esc(label) + '">Full View</button>' +
+            '<a class="mini-pill-btn" href="' + esc(url) + '" target="_blank" rel="noopener">Open &nearr;</a>' +
+          '</div>' +
+        '</div>' +
+      '</div>'
+    );
+  }
+
   function render() {
     var back = $('backBtn');
     var body = $('panelBody');
@@ -824,10 +1055,10 @@
 
       var rangeAtt = S.att.filter(inRange);
       $('panelTitle').textContent = 'Physios (' + S.profiles.length + ')';
-      $('panelSub').textContent = rangeAtt.length + ' login' + (rangeAtt.length === 1 ? '' : 's') + ' on map for selected dates';
+      $('panelSub').textContent = rangeAtt.length + ' shift' + (rangeAtt.length === 1 ? '' : 's') + ' on map for selected dates';
 
       if (!S.profiles.length) {
-        body.innerHTML = '<div class="empty">No physio profiles found in Supabase yet. Sync your <b>Physio Profiles</b> sheet first.</div>';
+        body.innerHTML = '<div class="empty">No physio profiles found in Supabase yet.</div>';
         return;
       }
 
@@ -835,9 +1066,7 @@
       var filtered = S.profiles.filter(function (p) {
         var all = shiftsFor(p.empId);
         var last = all[0];
-        var cnt = all.filter(inRange).length;
 
-        if (S.filter === 'inrange' && cnt === 0) return false;
         if (S.filter === 'Active' || S.filter === 'Completed' || S.filter === 'Missing') {
           if (!last || statusOf(last) !== S.filter) return false;
         }
@@ -856,11 +1085,11 @@
       body.innerHTML = filtered.map(function (p) {
         var all = shiftsFor(p.empId);
         var last = all[0];
-        var cnt = all.filter(inRange).length;
         var st = last ? statusOf(last) : 'None';
 
         var detail = last
           ? '<div class="meta-grid">' +
+              '<span class="meta-k">Hospital</span><span class="meta-v">' + esc(last.hospitalName || '-') + '</span>' +
               '<span class="meta-k">Last login</span><span class="meta-v">' + esc(fmtDT(last.signInTime)) + '</span>' +
               '<span class="meta-k">Last logout</span><span class="meta-v">' + (last.signOutTime ? esc(fmtDT(last.signOutTime)) : esc(statusLabel(last))) + '</span>' +
               '<span class="meta-k">Duration</span><span class="meta-v dur">' + esc(durOf(last)) + '</span>' +
@@ -868,16 +1097,16 @@
           : '<div class="meta-grid"><span class="meta-k">Status</span><span class="meta-v" style="color:var(--muted)">No shifts punched yet</span></div>';
 
         return (
-          '<button class="pcard st-' + st + '" type="button" data-emp="' + esc(p.empId) + '">' +
+          '<div class="pcard st-' + st + '" role="button" tabindex="0" data-emp="' + esc(p.empId) + '">' +
             '<div class="row">' +
               '<div>' +
                 '<div class="pname">' + esc(p.name) + '</div>' +
                 '<div class="punit">' + esc(p.unit || 'No unit') + ' &middot; ' + esc(p.empId) + '</div>' +
               '</div>' +
-              (cnt ? '<span class="badge">' + cnt + ' in range</span>' : '') +
+              (last ? '<span class="chip ' + st + '">' + esc(statusLabel(last)) + '</span>' : '') +
             '</div>' +
             detail +
-          '</button>'
+          '</div>'
         );
       }).join('');
 
@@ -892,18 +1121,26 @@
 
       body.innerHTML = list.length ? list.map(function (r) {
         var st = statusOf(r);
+        var outLocRow = r.signOutLocation
+          ? '<span class="meta-k">Out loc</span><span class="meta-v">' + esc(r.signOutLocation) + '</span>'
+          : '';
         return (
-          '<button class="scard st-' + st + '" type="button" data-shift="' + esc(r.id) + '">' +
+          '<div class="scard st-' + st + '" role="button" tabindex="0" data-shift="' + esc(r.id) + '">' +
             '<div class="row">' +
               '<div class="pname">' + esc(r.hospitalName || 'Hospital not entered') + '</div>' +
               '<span class="chip ' + st + '">' + esc(statusLabel(r)) + '</span>' +
             '</div>' +
             '<div class="meta-grid">' +
               '<span class="meta-k">Login</span><span class="meta-v">' + esc(fmtDT(r.signInTime)) + '</span>' +
-              '<span class="meta-k">Logout</span><span class="meta-v">' + (r.signOutTime ? esc(fmtDT(r.signOutTime)) : '-') + '</span>' +
-              '<span class="meta-k">Duration</span><span class="meta-v dur">' + esc(durOf(r)) + '</span>' +
+              '<span class="meta-k">In loc</span><span class="meta-v">' + esc(r.signInLocation || '-') + '</span>' +
+              '<span class="meta-k">Logout</span><span class="meta-v">' + (r.signOutTime ? esc(fmtDT(r.signOutTime)) : '-') + ' &middot; <span class="dur">' + esc(durOf(r)) + '</span></span>' +
+              outLocRow +
             '</div>' +
-          '</button>'
+            '<div class="sc-photos">' +
+              compactThumbHtml(r.signInPhoto, 'Login pic', 'in-lbl') +
+              compactThumbHtml(r.signOutPhoto, 'Logout pic', 'out-lbl') +
+            '</div>' +
+          '</div>'
         );
       }).join('') : '<div class="empty">No attendance punched for this physio yet.</div>';
 
@@ -922,7 +1159,7 @@
 
       var distNote = '';
       if (r.signOutTime && validPt(r.signInLat, r.signInLng) && validPt(r.signOutLat, r.signOutLng)) {
-        distNote = ' &middot; ' + haversineKm(Number(r.signInLat), Number(r.signInLng), Number(r.signOutLat), Number(r.signOutLng)) + ' apart';
+        distNote = ' · ' + haversineKm(Number(r.signInLat), Number(r.signInLng), Number(r.signOutLat), Number(r.signOutLng)) + ' apart';
       }
 
       body.innerHTML =
@@ -935,10 +1172,10 @@
           '<h3><span class="dot" style="background:var(--green)"></span>Sign in</h3>' +
           '<div class="kv">' +
             '<span class="kv-k">Date &amp; time</span><span class="kv-v">' + esc(fmtDT(r.signInTime)) + '</span>' +
-            '<span class="kv-k">Location</span><span class="kv-v">' + esc(r.signInLocation || '-') + '</span>' +
             '<span class="kv-k">Hospital</span><span class="kv-v">' + esc(r.hospitalName || '-') + '</span>' +
+            '<span class="kv-k">Location</span><span class="kv-v">' + esc(r.signInLocation || '-') + '</span>' +
           '</div>' +
-          photoHtml(r.signInPhoto, 'Sign-in photo') +
+          detailPhotoHtml(r.signInPhoto, 'Login Photo') +
         '</div>' +
 
         '<div class="sec">' +
@@ -946,34 +1183,27 @@
           (r.signOutTime ? (
             '<div class="kv">' +
               '<span class="kv-k">Date &amp; time</span><span class="kv-v">' + esc(fmtDT(r.signOutTime)) + '</span>' +
-              '<span class="kv-k">Location</span><span class="kv-v">' + esc(r.signOutLocation || '-') + distNote + '</span>' +
+              '<span class="kv-k">Location</span><span class="kv-v">' + esc((r.signOutLocation || '-') + distNote) + '</span>' +
               '<span class="kv-k">PRE name</span><span class="kv-v">' + esc(r.preName || '-') + '</span>' +
               '<span class="kv-k">Patients visited</span><span class="kv-v">' + esc(r.patientsVisited || '-') + '</span>' +
               '<span class="kv-k">Assessments done</span><span class="kv-v">' + esc(r.assessmentsDone || '-') + '</span>' +
               '<span class="kv-k">Converted</span><span class="kv-v">' + esc(r.converted || '-') + '</span>' +
               '<span class="kv-k">Remarks</span><span class="kv-v">' + esc(r.remarks || '-') + '</span>' +
             '</div>' +
-            photoHtml(r.signOutPhoto, 'Sign-out photo')
+            detailPhotoHtml(r.signOutPhoto, 'Logout Photo')
           ) : '<div class="nophoto">Not signed out yet (' + esc(statusLabel(r)) + ').</div>') +
         '</div>';
     }
   }
 
-  function photoHtml(url, label) {
-    if (!url) {
-      return '<div class="nophoto">Photo not available (still uploading or not taken).</div>';
-    }
-    return (
-      '<div class="photo-wrap">' +
-        '<img src="' + esc(url) + '" alt="' + esc(label) + '" referrerpolicy="no-referrer" loading="lazy" ' +
-          'data-zoom="' + esc(url) + '" ' +
-          'onerror="this.parentNode.outerHTML=\'<div class=nophoto>Photo could not be loaded.</div>\'" />' +
-        '<div class="photo-bar"><span>' + esc(label) + '</span><a href="' + esc(url) + '" target="_blank" rel="noopener">Open Photo &nearr;</a></div>' +
-      '</div>'
-    );
-  }
-
+  /* ---------------- Navigation & Lightbox ---------------- */
   var prevView = 'list';
+
+  function openLightbox(url, caption) {
+    $('lightboxImg').src = url;
+    $('lightboxCap').textContent = caption || '';
+    $('lightbox').classList.remove('hidden');
+  }
 
   function openProfile(emp) {
     S.empId = emp;
@@ -1007,12 +1237,13 @@
   });
 
   $('panelBody').addEventListener('click', function (e) {
-    var zoomImg = e.target.closest && e.target.closest('[data-zoom]');
-    if (zoomImg) {
-      $('lightboxImg').src = zoomImg.getAttribute('data-zoom');
-      $('lightbox').classList.remove('hidden');
+    var zoomEl = e.target.closest && e.target.closest('[data-zoom]');
+    if (zoomEl) {
+      e.stopPropagation();
+      openLightbox(zoomEl.getAttribute('data-zoom'), zoomEl.getAttribute('data-cap'));
       return;
     }
+    if (e.target.closest && e.target.closest('a')) return;
     var s = e.target.closest && e.target.closest('[data-shift]');
     if (s) return openShift(s.getAttribute('data-shift'));
     var p = e.target.closest && e.target.closest('[data-emp]');
@@ -1022,6 +1253,7 @@
   $('lightbox').addEventListener('click', function () {
     $('lightbox').classList.add('hidden');
     $('lightboxImg').src = '';
+    $('lightboxCap').textContent = '';
   });
 
   $('searchInput').addEventListener('input', function (e) {
@@ -1040,6 +1272,7 @@
     render();
   });
 
+  /* ---------------- Calendar Date Range Selector ---------------- */
   function keyOf(y, m, d) {
     return y + '-' + String(m + 1).padStart(2, '0') + '-' + String(d).padStart(2, '0');
   }
@@ -1185,10 +1418,9 @@
     $('refreshBtn').classList.add('spinning');
     try {
       var tk = todayKey();
-      var [profRes, attRows, setRes] = await Promise.all([
+      var [profRes, attRows] = await Promise.all([
         sb.from('physio_profiles').select('emp_id, name, unit').order('name', { ascending: true }),
-        fetchAllAttendance(),
-        sb.from('app_settings').select('value').eq('key', 'logo_url').maybeSingle()
+        fetchAllAttendance()
       ]);
 
       if (profRes.error) throw profRes.error;
@@ -1197,13 +1429,6 @@
         return { unit: p.unit || '', name: p.name || '', empId: p.emp_id || '' };
       });
       S.att = attRows.map(function (r) { return mapAttendanceRow(r, tk); });
-
-      var logoUrl = (setRes.data && setRes.data.value) || '';
-      if (logoUrl && logoUrl !== S.logo) {
-        S.logo = logoUrl;
-        $('logo').innerHTML = '<img src="' + esc(S.logo) + '" referrerpolicy="no-referrer" alt="Logo" />';
-        $('logo').firstChild.onerror = function () { $('logo').textContent = 'PT'; };
-      }
 
       $('loading').classList.add('hidden');
       $('refreshBtn').classList.remove('spinning');
@@ -1218,7 +1443,6 @@
     }
   }
 
-  // Subscribe to live database changes so managers see punches instantly
   var rtTimer = null;
   function scheduleReload() {
     clearTimeout(rtTimer);
